@@ -7,10 +7,10 @@
 #include <unistd.h>
 #include <iostream>
 #include <cstring>
+#include <map>
 
 //class
 #include "channel.hpp"
-#include "operator.hpp"
 
 #define p(x) std::cout << x << std::endl;
 #define pp(x, y) std::cout << x << ", " << y<< std::endl;

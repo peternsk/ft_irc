@@ -4,8 +4,7 @@
 
 	// }
 	channel::channel(std::string name) \
-		: _name(verifyName(name)), _nbPeople(1), _isOnlyInvite(false), _limitPeople(-1), _needPw(false) {
-
+		: _name(verifyName(name)), _nbPeople(0), _isOnlyInvite(false), _limitPeople(-1), _needPw(false) {
 	}
 
 	channel::~channel() {
@@ -43,7 +42,10 @@
 	// COMMAND
 	//****************************************************************//
 
-	std::string channel::topic(std::string newTopic) {
+	// add a client that will change it if its an operator than can change the topic even if the flag is up
+	std::string channel::topic(Client *asking, std::string newTopic) {
+		if (_isChopTopic && !asking->getChop())
+			return ""; // THROW EXEPCTIONS
 		if (!newTopic.empty())
 			_topic = newTopic;
 
@@ -61,21 +63,21 @@
 	// MODE
 	//****************************************************************//
 
-	void channel::setInvitationMode(bool setOnlyInvite) {
-		if (!setOnlyInvite)
-			_isOnlyInvite = false;
-		else
-			_isOnlyInvite = true;
+	void channel::setInvitationMode(Client *asking, bool setOnlyInvite) {
+		if (!asking->getChop())
+			return ; //THROW ERROR
+		_isOnlyInvite = setOnlyInvite;
 	}
 
-	void channel::setLimitMode(int setLimit) {
-		if (setLimit == -1)
-			_limitPeople = -1;
-		else
-			_limitPeople = setLimit;
+	void channel::setLimitMode(Client *asking, int setLimit) {
+		if (!asking->getChop())
+			return ; //THROW ERROR
+		_limitPeople = setLimit;
 	}
 
-	void channel::setWpMode(std::string wp) {
+	void channel::setWpMode(Client *asking, std::string wp) {
+		if (!asking->getChop())
+			return ; //THROW ERROR
 		if (wp.empty())
 			_needPw = false;
 		else {
@@ -84,4 +86,25 @@
 		}
 	}
 
+	void channel::setChopChangeTopic(Client *asking, bool setChopTopic) {
+		if (!asking->getChop())
+			return ; //THROW ERROR
+		_isChopTopic = setChopTopic;
+	}
+
+	void channel::setChop(Client *asking, const std::string &name, bool SetChop) {
+		if (!asking->getChop())
+			return ; 	// OR THROW EXECPTIONS
+
+		if (clients.find(name) != clients.end())
+			clients[name]->setChop(SetChop);
+	}
+
+	void channel::addClient(Client * client) {
+		if (!client)
+			return ; //THROW EXEPTION
+		if (_nbPeople == 0)
+			client->setChop(true);
+		clients[client->getName()] = client;
+	}
 

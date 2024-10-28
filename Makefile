@@ -12,7 +12,7 @@ COLOR_RE := \033[1;35m
 COLOR_MSG := \033[1;35m
 
 # Source and output
-SRCS := main.cpp channel.cpp
+SRCS := main.cpp channel.cpp client.cpp
 OBJS := $(SRCS:.cpp=.o)
 TARGET := ft_irc
 

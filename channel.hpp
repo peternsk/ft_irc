@@ -1,8 +1,9 @@
 #pragma once
 
 #include "ft_irc.hpp"
+#include "client.hpp" 
 
-
+class Client;
 class channel {
 	public:
 
@@ -19,10 +20,14 @@ class channel {
 	bool getIsIniteOnly(void) const;
 	// topic function is also a getter
 
-
-
 	// creer just quand quelqun join jpense
 	channel(std::string name);
+
+// **************************************************************//
+// CLIENTS
+// **************************************************************//
+
+	void addClient(Client * client);
 
 // **************************************************************//
 // COMMAND
@@ -30,7 +35,7 @@ class channel {
 	// void join();
 	// void kick();
 	// void changeMode();
-	std::string topic(std::string newTopic = "");
+	std::string topic(Client *asking, std::string newTopic = "");
 
 
 
@@ -40,16 +45,17 @@ class channel {
 // MODE
 // **************************************************************//
 	// — i : Définir/supprimer le canal sur invitation uniquement
-	void setInvitationMode(bool setOninvite = false);
+	void setInvitationMode(Client *asking, bool setOninvite = false);
 	// — t : Définir/supprimer les restrictions de la commande TOPIC pour les opé-
 	// rateurs de canaux
-
+	void setChopChangeTopic(Client *asking, bool setChopTopic = false);
 	// — k : Définir/supprimer la clé du canal (mot de passe)
-	void setWpMode(std::string wp = "");
+	void setWpMode(Client *asking, std::string wp = "");
 	// — o : Donner/retirer le privilège de l’opérateur de canal
-	
+	void setChop(Client *asking, const std::string &name, bool SetChop = false);
 	// — l : Définir/supprimer la limite d’utilisateurs pour le canal
-	void setLimitMode(int setLimit = -1);
+	void setLimitMode(Client *asking, int setLimit = -1);
+
 
 
 
@@ -59,6 +65,8 @@ class channel {
 	int _nbPeople;
 
 // for modes
+	// changing the topic only chop
+	bool _isChopTopic;
 	bool _isOnlyInvite;
 	int _limitPeople;
 	bool _needPw;
@@ -66,8 +74,10 @@ class channel {
 
 	// list all the client connected 
 
-
 	std::string verifyName(std::string & name);
+	// THE CLIENTS
+	std::map < std::string, Client * > clients;
+	
 };	
 
 
