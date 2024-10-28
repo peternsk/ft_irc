@@ -6,7 +6,8 @@
 class Client;
 class channel {
 	public:
-
+	// helpers;
+	void listClients(void);
 	// peut etre pas utile
 	// channel();
 
@@ -18,7 +19,6 @@ class channel {
 	std::string getName(void) const;
 	short getNbPeople(void) const;
 	bool getIsIniteOnly(void) const;
-	// topic function is also a getter
 
 	// creer just quand quelqun join jpense
 	channel(std::string name);
@@ -33,8 +33,8 @@ class channel {
 // COMMAND
 // **************************************************************//
 	// void join();
-	// void kick();
-	// void changeMode();
+	void kick(Client * client);
+	// invite
 	std::string topic(Client *asking, std::string newTopic = "");
 
 

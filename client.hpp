@@ -1,19 +1,31 @@
 #pragma once
 
 #include "ft_irc.hpp"
+#include "channel.hpp"
+
+class channel;
 
 class Client {
 public :
+//helpers
+	void showChannels(void);
 	Client();
-	Client(bool setChop, std::string name);
-	~Client();	
-	void setChop(bool SetChop);
-	void setName(std::string name);
+	Client(std::string name);
+	~Client();
 
-	bool getChop(void) ;
+	bool isPartChan(channel *chan);
+	void setChop(bool SetChop, channel * chan);
+	void setName(std::string name);
+	bool getChop(channel * chan) ;
 	std::string getName(void);
+
+	void join(channel *chan);
+	void removeChan(channel *chan);
+
+	void kick(Client * client, channel * chan);
+
 private :
-	bool _isChop;
+	std::map <channel *, bool > _channels;
 	std::string _name;
 };
 
