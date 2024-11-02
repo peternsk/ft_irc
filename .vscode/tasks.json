@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "C/C++: gcc build minishell",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-j", "4"  // Adjust the number of jobs if necessary
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "Build task for minishell."
+        }
+    ]
+}

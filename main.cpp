@@ -6,15 +6,12 @@ int main()
 	// user->addchannel(chan)
 	// chan->adduser(user)
 	try {
-		channel *chan = new channel("channelname");
-		p((chan->getName())); 
 		Client *bob = new Client("BOB");
 		Client *MIAM = new Client("MIAM");
 
-		chan->addClient(bob);
-		bob->join(chan);
+		Channel *chan = bob->join("channel");
+		p((chan->getName())); 
 
-		chan->addClient(MIAM);
 		MIAM->join(chan);
 
 		p("");
@@ -29,6 +26,7 @@ int main()
 		p("list clients on cvhannels");
 		chan->listClients();
 		bob->kick(MIAM, chan);
+		chan->listClients();
 
 		p("miam channels");
 		MIAM->showChannels();

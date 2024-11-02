@@ -1,30 +1,27 @@
 #include "channel.hpp"
 
-	// channel::channel() {
-
-	// }
-	channel::channel(std::string name) \
+	Channel::Channel(std::string name) \
 		: _name(verifyName(name)), _nbPeople(0), _isOnlyInvite(false), _limitPeople(-1), _needPw(false) {
 	}
 
-	channel::~channel() {
+	Channel::~Channel() {
 
 	}
 
-	short channel::getNbPeople(void) const {
+	short Channel::getNbPeople(void) const {
 		return _nbPeople;
 	}
 
-	std::string channel::getName(void) const {
+	std::string Channel::getName(void) const {
 		return _name;
 	}
-	bool channel::getIsIniteOnly(void) const {
+	bool Channel::getIsIniteOnly(void) const {
 		return _isOnlyInvite;
 	}
 
 
 // gerer les code derreurs
-	std::string channel::verifyName(std::string & name) {
+	std::string Channel::verifyName(std::string & name) {
 		short lenghtMax = 200;
 		if(name[0] != '#')
 		{
@@ -43,7 +40,7 @@
 	//****************************************************************//
 
 	// add a client that will change it if its an operator than can change the topic even if the flag is up
-	std::string channel::topic(Client *asking, std::string newTopic) {
+	std::string Channel::topic(Client *asking, std::string newTopic) {
 		if (_isChopTopic && !asking->getChop(this))
 			return ""; // THROW EXEPCTIONS
 		if (!newTopic.empty())
@@ -55,7 +52,7 @@
 		return _topic;
 	}
 
-	// void channel::join() {
+	// void Channel::join() {
 
 	// }
 
@@ -63,19 +60,19 @@
 	// MODE
 	//****************************************************************//
 
-	void channel::setInvitationMode(Client *asking, bool setOnlyInvite) {
+	void Channel::setInvitationMode(Client *asking, bool setOnlyInvite) {
 		if (!asking->getChop(this))
 			return ; //THROW ERROR
 		_isOnlyInvite = setOnlyInvite;
 	}
 
-	void channel::setLimitMode(Client *asking, int setLimit) {
+	void Channel::setLimitMode(Client *asking, int setLimit) {
 		if (!asking->getChop(this))
 			return ; //THROW ERROR
 		_limitPeople = setLimit;
 	}
 
-	void channel::setWpMode(Client *asking, std::string wp) {
+	void Channel::setWpMode(Client *asking, std::string wp) {
 		if (!asking->getChop(this))
 			return ; //THROW ERROR
 		if (wp.empty())
@@ -86,13 +83,13 @@
 		}
 	}
 
-	void channel::setChopChangeTopic(Client *asking, bool setChopTopic) {
+	void Channel::setChopChangeTopic(Client *asking, bool setChopTopic) {
 		if (!asking->getChop(this))
 			return ; //THROW ERROR
 		_isChopTopic = setChopTopic;
 	}
 
-	void channel::setChop(Client *asking, const std::string &name, bool SetChop) {
+	void Channel::setChop(Client *asking, const std::string &name, bool SetChop) {
 		if (!asking->getChop(this))
 			return ; 	// OR THROW EXECPTIONS
 
@@ -100,22 +97,39 @@
 			clients[name]->setChop(SetChop, this);
 	}
 
-	void channel::addClient(Client * client) {
+	void Channel::addClient(Client * client) {
 		if (!client)
 			return ; //THROW EXEPTION
 		if (_nbPeople == 0)
 			client->setChop(true, this);
+		_nbPeople++;
 		clients[client->getName()] = client;
 	}
 
-	void channel::kick(Client * client) {
+	void Channel::kick(Client * client) {
 		std::map < std::string, Client * >::iterator it = clients.find(client->getName());
 		clients.erase(it);
+		_nbPeople--;
 	}
 
-	void channel::listClients(void) {
+	void Channel::listClients(void) {
 		for (std::map <std::string, Client * >::iterator it = clients.begin(); it != clients.end(); ++it) {
 			std::cout << it->first << std::endl;
 		}
+	}
+
+	void Channel::sendToClient() {
+		for (std::map<std::string, Client *>::iterator it; it != clients.end(); ++it) {
+			// // fd a changer
+			// if (send(it->fd, , 0) == 1)
+			// 	throw std::exception();
+		}
+
+	}
+
+	bool Channel::hasClient(Client * client) {
+		if (clients.find(client->getName()) != clients.end())
+			return true;
+		return false;
 	}
 

@@ -1,6 +1,6 @@
 
 CXX := g++
-CXXFLAGS := -std=c++98 -Wall -Wextra 
+CXXFLAGS := -std=c++98 -Wall -Wextra -g
 
 # Colors
 COLOR_RESET := \033[0m
@@ -12,7 +12,7 @@ COLOR_RE := \033[1;35m
 COLOR_MSG := \033[1;35m
 
 # Source and output
-SRCS := main.cpp channel.cpp client.cpp
+SRCS := channelManager.cpp channel.cpp client.cpp channelManagerUtils.cpp
 OBJS := $(SRCS:.cpp=.o)
 TARGET := ft_irc
 
@@ -20,7 +20,7 @@ TARGET := ft_irc
 PROGRAM_NAME := ft_irc
 
 # Custom message with fancy border
-MESSAGE := "$(COLOR_MSG)╭───────────────────────────────╮\n│ 🌟 $(PROGRAM_NAME) Built Successfully 🌟  │\n╰───────────────────────────────╯$(COLOR_RESET)"
+MESSAGE := "$(COLOR_MSG)╭───────────────────────────────╮\n│🌟 $(PROGRAM_NAME) Built Successfully 🌟│\n╰───────────────────────────────╯$(COLOR_RESET)"
 
 # Rules
 all: $(TARGET)
@@ -30,7 +30,7 @@ $(TARGET): $(OBJS)
 	@$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
 	@echo -e "$(COLOR_OK)Build succeeded!$(COLOR_RESET)"
 	@echo $(MESSAGE)
-
+	./$(PROGRAM_NAME)
 %.o: %.cpp
 	@echo -e "$(COLOR_CXX)Compiling $<...$(COLOR_RESET)"
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
