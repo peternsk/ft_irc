@@ -71,6 +71,30 @@ namespace CMDH {
 		delete chan;
 	}
 
+	bool joinCheckMode(Channel * chan, const Cmd & cmd, int & nbWp) {
+		if (chan->getIsInviteOnly()) {
+			//send error
+			return false;
+		}
+		if (chan->getNeedWp())
+		{
+			nbWp++;
+				p("needs pw");
+			if ((int)cmd.password.size() < nbWp)
+			{
+				p("no no password");
+				// send error
+				return false;
+			}
+			if (!chan->tryWp(cmd.password[nbWp - 1]))
+			{
+				p("wrong pw");
+				// send error
+				return false;
+			}
+		}
+		return true;
+	}
 }
 
 // TO DO :

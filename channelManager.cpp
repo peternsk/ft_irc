@@ -25,10 +25,11 @@ int main() {
 	cmd2.client = mia;
 	cmd2.cmd = JOIN;
 	cmd2.arg.push_back(chanName);
+	cmd2.password.push_back("m");
 	
 	execCmd(cmd1);
 	chanVec channels = CMDH::channelsArr();
-	channels[0]->setWpMode(bob, "nigga");
+	channels[0]->setWpMode(bob, "m");
 
 	execCmd(cmd2);
 

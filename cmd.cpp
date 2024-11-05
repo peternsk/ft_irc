@@ -19,29 +19,13 @@ namespace CMD {
 		// p("sdfdsffsd");
 		for (int i = 0; i < (int)cmd.arg.size(); ++i)
 		{
-		// p("sdfdsffsd");
-
 			try {
 				// make sur that he is not already in the channel
 				Channel *chan = CMDH::findChan(cmd.arg[i]);
-				if (chan->getIsInviteOnly()) {
-					//send error
-					continue ;
-				}
-				if (chan->getNeedWp())
-				{
-						p("needs pw");
-					if (!chan->tryWp(cmd.password[nbWp]))
-					{
-						p("wrong pw");
-
-						// send error
-						continue ;
-					}
-					nbWp++;
-
-				}
+				if (!CMDH::joinCheckMode(chan, cmd, nbWp))
+					continue;
 				cmd.client->join(chan);
+
 			}
 			catch(std::exception & e) {
 				p("channel doesnt exist so create it");
@@ -50,7 +34,6 @@ namespace CMD {
 				CMDH::channelsArr(cmd.client->join(cmd.arg[i]));
 			}
 		}
-
 	}
 	void topic(const Cmd &cmd);
 	void kick(const Cmd &cmd);

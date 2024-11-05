@@ -3,7 +3,7 @@
 
 // client Channel manager
 #include "ft_irc.hpp"
-
+#include "struct.hpp"
 typedef std::vector<Channel *> chanVec;
 typedef std::vector<Client *> clientVec;
 
@@ -21,6 +21,7 @@ namespace CMDH {
 
 	void destroyChan(Channel * chan);
 
+	bool joinCheckMode(Channel * chan, const Cmd & cmd, int & nbWp);
 }
 
 #endif

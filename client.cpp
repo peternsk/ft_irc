@@ -1,7 +1,8 @@
 #include "client.hpp"
 
 	Client::Client() {}
-	Client::~Client() {}
+	Client::~Client() {
+	}
 
 	Client::Client(std::string name) : _name(name) {}
 

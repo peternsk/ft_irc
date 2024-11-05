@@ -14,6 +14,8 @@
 //class
 #include "channel.hpp"
 #include "cmdUtils.hpp"
+#include "struct.hpp"
+
 
 #define p(x) std::cout << x << std::endl;
 #define pp(x, y) std::cout << x << ", " << y<< std::endl;
@@ -32,11 +34,6 @@
 #define CMSG	10
 #define DISK	11
 
-struct Cmd {
-	Client * client;
-	short cmd;
-	std::vector< std::string > arg;
-	std::vector < std::string > password;
-};
+
 
 // attention dans le projet avec les containers TOUJOURS FINIR DE LIRE AVANT DECRIRE
