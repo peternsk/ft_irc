@@ -24,18 +24,28 @@ namespace CMD {
 				Channel *chan = CMDH::findChan(cmd.arg[i]);
 				if (!CMDH::joinCheckMode(chan, cmd, nbWp))
 					continue;
+				p("joins channel");
 				cmd.client->join(chan);
-
 			}
 			catch(std::exception & e) {
 				p("channel doesnt exist so create it");
-				
 				// create the channels because it doesnt exist
 				CMDH::channelsArr(cmd.client->join(cmd.arg[i]));
 			}
 		}
 	}
-	void topic(const Cmd &cmd);
+	void topic(const Cmd &cmd) {
+		if (cmd.arg.size() > 1)
+			throw std::exception();
+		if (cmd.arg.size() == 1)
+			cmd.chan->topic(cmd.client, cmd.arg[0]);
+		else
+		{
+			
+			pp("this is the topic", cmd.chan->topic(cmd.client));
+			// send to client the topic
+		}
+	}
 	void kick(const Cmd &cmd);
 	void nick(const Cmd &cmd);
 	void mode(const Cmd &cmd);
@@ -56,8 +66,8 @@ void execCmd(const Cmd &cmd) {
 		return ;
 	}
 	static void (*cmdlist[])(const Cmd &) = {
-    	CMD::join
-    	// CMD::topic,
+    	CMD::join,
+    	CMD::topic
     	// CMD::kick,
     	// CMD::nick,
     	// CMD::mode,

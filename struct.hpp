@@ -5,4 +5,5 @@ struct Cmd {
 	short cmd;
 	std::vector< std::string > arg;
 	std::vector < std::string > password;
+	Channel * chan;
 };

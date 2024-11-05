@@ -26,12 +26,27 @@ int main() {
 	cmd2.cmd = JOIN;
 	cmd2.arg.push_back(chanName);
 	cmd2.password.push_back("m");
+	cmd2.password.push_back("mama");
+
+
 	
 	execCmd(cmd1);
 	chanVec channels = CMDH::channelsArr();
 	channels[0]->setWpMode(bob, "m");
 
 	execCmd(cmd2);
+	Cmd cmd3;
+	cmd3.client = mia;
+	cmd3.cmd = TOPIC;
+	cmd3.arg.push_back("new topic");
+	cmd3.chan = CMDH::findChan(chanName);
+	execCmd(cmd3);
+
+	Cmd cmd4;
+	cmd4.client = mia;
+	cmd4.cmd = TOPIC;
+	cmd4.chan = CMDH::findChan(chanName);
+	execCmd(cmd4);
 
 
 	for (chanVec::iterator it = channels.begin(); it != channels.end(); ++it)
