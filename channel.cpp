@@ -15,7 +15,7 @@
 	std::string Channel::getName(void) const {
 		return _name;
 	}
-	bool Channel::getIsIniteOnly(void) const {
+	bool Channel::getIsInviteOnly(void) const {
 		return _isOnlyInvite;
 	}
 
@@ -133,3 +133,12 @@
 		return false;
 	}
 
+	bool Channel::getNeedWp(void) const {
+		return _needPw;
+	}
+
+	bool Channel::tryWp(const std::string & trywp) {
+		if (_wp == trywp)
+			return true;
+		return false;
+	}

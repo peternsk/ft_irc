@@ -20,7 +20,10 @@ class Channel {
 	//getters
 	std::string getName(void) const;
 	short getNbPeople(void) const;
-	bool getIsIniteOnly(void) const;
+	bool getIsInviteOnly(void) const;
+	bool getNeedWp(void) const;
+
+	bool tryWp(const std::string & trywp);
 
 	// creer just quand quelqun join jpense
 	Channel(std::string name);

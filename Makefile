@@ -12,7 +12,7 @@ COLOR_RE := \033[1;35m
 COLOR_MSG := \033[1;35m
 
 # Source and output
-SRCS := channelManager.cpp channel.cpp client.cpp channelManagerUtils.cpp
+SRCS := channelManager.cpp channel.cpp client.cpp cmdUtils.cpp cmd.cpp
 OBJS := $(SRCS:.cpp=.o)
 TARGET := ft_irc
 
@@ -30,7 +30,7 @@ $(TARGET): $(OBJS)
 	@$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
 	@echo -e "$(COLOR_OK)Build succeeded!$(COLOR_RESET)"
 	@echo $(MESSAGE)
-	./$(PROGRAM_NAME)
+# ./$(PROGRAM_NAME)
 %.o: %.cpp
 	@echo -e "$(COLOR_CXX)Compiling $<...$(COLOR_RESET)"
 	@$(CXX) $(CXXFLAGS) -c $< -o $@

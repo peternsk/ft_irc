@@ -1,49 +1,47 @@
-#include "channel.hpp"
-#include "client.hpp"
 #include "ft_irc.hpp"
-#include "channelManagerUtils.hpp"
-
 // get Channels static
+#include "cmd.hpp"
+
 
 std::string chanName = "#lalal";
 int main() {
 	Client * bob = new Client("nana");
 	Client * mia = new Client("babnaa");
 
-	CCM::clientsArr(bob);
-	std::vector<Client *> clients = CCM::clientsArr(mia);
+	CMDH::clientsArr(bob);
+	std::vector<Client *> clients = CMDH::clientsArr(mia);
 
 	for (std::vector<Client *>::iterator it = clients.begin(); it != clients.end(); ++it)
 	{
 		std::cout << (*it)->getName() << std::endl;
 	}
 
-	std::vector<Channel *>& Channels = CCM::channelsArr(bob->join(chanName));
-	for (std::vector<Channel *>::iterator it = Channels.begin(); it != Channels.end(); ++it)
-	{
-		std::cout << (*it)->getName() << std::endl;
-	}
-	Channel * chan = CCM::findChan(Channels, chanName);
+	Cmd cmd1;
+	cmd1.client = bob;
+	cmd1.cmd = JOIN;
+	cmd1.arg.push_back(chanName);
 
-	std::cout << chan->getName()  << std::endl;
+	Cmd cmd2;
+	cmd2.client = mia;
+	cmd2.cmd = JOIN;
+	cmd2.arg.push_back(chanName);
 	
-	mia->join(chan);
-	std::cout << chan->getNbPeople() << "before removed" << std::endl;
-	CCM::removeClientChan(bob, chan);
-	CCM::removeClientChan(mia, chan);
-	// std::cout << chan->getNbPeople() << "after removed" << std::endl;
+	execCmd(cmd1);
+	chanVec channels = CMDH::channelsArr();
+	channels[0]->setWpMode(bob, "nigga");
 
-	std::vector<Channel *>& Channelss = CCM::channelsArr();
-		std::cout << Channelss.size() << std::endl;
+	execCmd(cmd2);
 
-	for (std::vector<Channel *>::iterator it = Channelss.begin(); it != Channelss.end(); ++it)
+
+	for (chanVec::iterator it = channels.begin(); it != channels.end(); ++it)
 	{
-		std::cout << (*it)->getName() << Channelss.size() << std::endl;
-		
+		std::cout << (*it)->getName() << " name" << std::endl;
 	}
+
+
 	// client are automaticaly destroy with the client disconnect function
-	CCM::clientDisconnect(bob);
-	CCM::clientDisconnect(mia);
+	CMDH::clientDisconnect(bob);
+	CMDH::clientDisconnect(mia);
 	// void removeClientChan(Client * client, Channel * chan);
 
 // comment je recois la struct et dependamment de se que je recois je fais dautre truc avec
