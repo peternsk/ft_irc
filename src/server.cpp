@@ -69,14 +69,10 @@ void Server::serverInit()
 		{
 			if (fds[i].revents & POLLIN)//-> check if there is data to read
 			{
-				if (fds[i].fd == serSocFd){
+				if (fds[i].fd == serSocFd)
 					acceptNewClient(); //-> accept new client
-                    std::cout << GRE << " AcceptNewClient(); " << WHI << std::endl;
-                }
-				else{
+				else
 					receiveNewData(fds[i].fd); //-> receive new data from a registered client
-                    std::cout << GRE << " ReceiveNewData(fds[i].fd); " << WHI << std::endl;
-                }
 			}
 		}
 	}
