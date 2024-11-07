@@ -22,6 +22,8 @@ namespace CMDH {
 	void destroyChan(Channel * chan);
 
 	bool joinCheckMode(Channel * chan, const Cmd & cmd, int & nbWp);
+
+	Client *findClient(const std::string name);
 }
 
 #endif

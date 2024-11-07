@@ -32,7 +32,20 @@
 #define PART	8
 #define QUIT	9
 #define CMSG	10
-#define DISK	11
+
+// different modes
+#define _O		12
+#define O 		13
+#define _T		14
+#define T		15
+#define _K		16
+#define K		17
+#define _L		18
+#define L		19
+#define _I		20
+#define I		21
+
+
 
 
 

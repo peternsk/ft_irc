@@ -95,6 +95,15 @@ namespace CMDH {
 		}
 		return true;
 	}
+
+	Client *findClient(const std::string name) {
+		clientVec clients = CMDH::clientsArr();
+		for (clientVec::iterator it = clients.begin(); it != clients.end(); ++it) {
+			if ((*it)->getName() == name)
+				return (*it);
+		}
+		return NULL;
+	}
 }
 
 // TO DO :

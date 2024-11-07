@@ -47,7 +47,9 @@
 				client->removeChan(chan);
 				chan->kick(client);
 			}
+			// else return dont have permition ou que le client nest pas dans le channel
 		}
+		// else retourne client is not in the channel
 	}
 
 	void Client::removeChan(Channel *chan) {

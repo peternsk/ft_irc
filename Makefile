@@ -1,6 +1,8 @@
 
 CXX := g++
-CXXFLAGS := -std=c++98 -Wall -Wextra -g
+# CXXFLAGS := -std=c++98 -Wall -Wextra -g
+CXXFLAGS := -Wall -Wextra -g
+
 
 # Colors
 COLOR_RESET := \033[0m

@@ -1,9 +1,10 @@
 #pragma once
 
 struct Cmd {
-	Client * client;
 	short cmd;
+	short mode;
 	std::vector< std::string > arg;
 	std::vector < std::string > password;
+	Client * client;
 	Channel * chan;
 };

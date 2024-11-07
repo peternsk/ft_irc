@@ -34,6 +34,7 @@ namespace CMD {
 			}
 		}
 	}
+
 	void topic(const Cmd &cmd) {
 		if (cmd.arg.size() > 1)
 			throw std::exception();
@@ -46,16 +47,79 @@ namespace CMD {
 			// send to client the topic
 		}
 	}
-	void kick(const Cmd &cmd);
-	void nick(const Cmd &cmd);
-	void mode(const Cmd &cmd);
-	void list(const Cmd &cmd);
-	void invite(const Cmd &cmd);
-	void msg(const Cmd &cmd);
-	void part(const Cmd &cmd);
-	void quit(const Cmd &cmd);
-	void cmsg(const Cmd &cmd);
-	void disc(const Cmd &cmd);
+
+	void kick(const Cmd &cmd) {
+		if (cmd.chan->hasClient(cmd.client))
+		{
+			// get client to kick
+			Client *toKick = CMDH::findClient(cmd.arg[0]);
+			if (!toKick)
+				return // exeption client to kick dont even exist
+			cmd.client->kick(toKick, cmd.chan);
+		}
+		// else channels doesnt have the client
+	}
+
+	void nick(const Cmd &cmd) {
+		cmd.client->setName(cmd.arg[0]);
+	}
+
+	void mode(const Cmd &cmd) {
+		switch (cmd.mode) {
+			case _I:
+				cmd.chan->setInvitationMode(cmd.client);
+				break;
+			case I:
+				cmd.chan->setInvitationMode(cmd.client, true);
+				break;
+			case _T:
+				cmd.chan->setChopChangeTopic(cmd.client);
+				break;
+			case T:
+				cmd.chan->setChopChangeTopic(cmd.client, true);
+				break;
+			case _K:
+				cmd.chan->setWpMode(cmd.client);
+				break;
+			case K:
+				cmd.chan->setWpMode(cmd.client, cmd.arg[0]);
+				break;
+			case O:
+				cmd.chan->setChop(cmd.client, cmd.arg[0], true);
+				break;
+			case _O:
+				cmd.chan->setChop(cmd.client, cmd.arg[0]);
+				break;
+			case L:
+				cmd.chan->setLimitMode(cmd.client, std::stoi(cmd.arg[0]));
+				break;
+			case _L:
+				cmd.chan->setLimitMode(cmd.client);
+				break;
+		}
+	}
+
+	// void list(const Cmd &cmd) { // faut til le faire ??
+
+	// }
+	// void invite(const Cmd &cmd) { // comment faire?
+
+	// }
+	void msg(const Cmd &cmd) {
+		Client * toSend = CMDH::findClient(cmd.arg[0]);
+		if (!toSend)
+			return ; // error client does not exist
+		// envoyer un message
+	}
+	void part(const Cmd &cmd) {
+		CMDH::removeClientChan(cmd.client, cmd.chan);
+	}
+	void quit(const Cmd &cmd) {
+		CMDH::clientDisconnect(cmd.client);
+	}
+	void cmsg(const Cmd &cmd) {
+		cmd.chan->sendMSGClient(cmd.arg[0]);
+	}
 
 }
 
@@ -67,17 +131,16 @@ void execCmd(const Cmd &cmd) {
 	}
 	static void (*cmdlist[])(const Cmd &) = {
     	CMD::join,
-    	CMD::topic
-    	// CMD::kick,
-    	// CMD::nick,
-    	// CMD::mode,
-    	// CMD::list,
-    	// CMD::invite,
-    	// CMD::msg,
-    	// CMD::part,
-    	// CMD::quit,
-    	// CMD::cmsg,
-		// CMD::disc
+    	CMD::topic,
+    	CMD::kick,
+    	CMD::nick,
+    	CMD::mode,
+    	// CMD::list /// wesh ?
+    	// CMD::invite // comment faire
+    	CMD::msg,
+    	CMD::part,
+    	CMD::quit,
+    	CMD::cmsg
 	};
 	cmdlist[cmd.cmd](cmd);
 }
