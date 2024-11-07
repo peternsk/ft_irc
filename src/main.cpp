@@ -5,7 +5,7 @@ int main(int ac, char**av)
     if(ac == 3){
 
 	    Server ser(atol(av[1]), av[2]);
-	    std::cout << "---- SERVER ----" << std::endl;
+	    ser.irfLogo();
 	    try{
 		    signal(SIGINT, Server::signalHandler); //-> catch the signal (ctrl + c)
 		    signal(SIGQUIT, Server::signalHandler); //-> catch the signal (ctrl + \)

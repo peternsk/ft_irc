@@ -23,6 +23,19 @@ Server::~Server(){
 /*   SERVER INIT    */
 /********************/
 
+void Server::irfLogo(){
+
+	std::cout << "▒▓████▓▒ ▒▓███████▓▒   ▒▓██████▓▒ " << std::endl;
+	std::cout << "  ▒██▒   ▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒  ▒▓█▓▒" << std::endl;
+	std::cout << "  ▒██▒   ▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒       " << std::endl;
+	std::cout << "  ▒██▒   ▒▓███████▓▒  ▒▓█▓▒       " << std::endl;
+	std::cout << "  ▒██▒   ▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒       " << std::endl;
+	std::cout << "  ▒██▒   ▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒  ▒▓█▓▒" << std::endl;
+	std::cout << "▒▓████▓▒ ▒▓█▓▒  ▒▓█▓▒  ▒▓██████▓▒ " << std::endl;
+	std::cout << "     [ Internet Relay Chat ]" << std::endl;
+	std::cout << std::endl;
+}
+
 void Server::serSocket()
 {
 	struct sockaddr_in add;
@@ -155,10 +168,48 @@ void Server::receiveNewData(int fd)
 		clearClients(fd);
 		close(fd);
 	}
-
 	else{
 		buff[bytes] = '\0';
-		std::cout << YEL << "Client <" << fd << "> Data: " << WHI << buff;
+		Server::setCmdList(buff);
+		// std::cout << YEL << "Client <" << fd << "> Data: " << WHI << buff;
 		//here you can add your code to process the received data: parse, check, authenticate, handle the command, etc...
 	}
 }
+
+
+
+/********************/
+/*    CMD PARSER    */
+/********************/
+
+std::vector<std::string> Server::setCmdList(std::string clientRequest){
+
+	std::vector<std::string> tokens;
+    std::string token;
+
+    size_t pos = 0;
+
+    while (((pos = clientRequest.find(" ")) != std::string::npos) 
+		|| ((pos = clientRequest.find(",")) != std::string::npos)){
+        token = clientRequest.substr(0, pos);
+        tokens.push_back(token);
+        clientRequest.erase(0, pos + 1);
+    }
+    tokens.push_back(clientRequest);
+
+	std::cout << tokens.at(0) << std::endl;
+	std::cout << tokens.at(1) << std::endl;
+	std::cout << tokens.at(2) << std::endl;
+	std::cout << tokens.at(3) << std::endl;
+	std::cout << tokens.at(4) << std::endl;
+	std::cout << tokens.at(5) << std::endl;
+
+	return tokens;
+}
+
+// void Server::cmdHandler(std::string clientRequest){
+// 	std::string cmdArr[] = {"JOIN", "USER", "KICK", "INVITE", "TOPIC", "MODE", "NICK"};
+// 	// void ((Server::*funcArr[]))() = {&Server::debug, &Server::info, &Server::warning, &Server::error};
+// 	// void ((Server::*funcArr[]))() = {&Server::Client::join()};
+
+// }
