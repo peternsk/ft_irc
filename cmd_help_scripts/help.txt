@@ -1,0 +1,6 @@
+/topic  [<channel>] [<topic>|-delete]
+
+channel: channel name
+  topic: new topic
+-delete: delete channel topic
+
