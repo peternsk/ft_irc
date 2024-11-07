@@ -170,7 +170,7 @@ void Server::receiveNewData(int fd)
 	}
 	else{
 		buff[bytes] = '\0';
-		Server::setCmdList(buff);
+		Server::cmdHandler(buff);
 		// std::cout << YEL << "Client <" << fd << "> Data: " << WHI << buff;
 		//here you can add your code to process the received data: parse, check, authenticate, handle the command, etc...
 	}
@@ -197,19 +197,21 @@ std::vector<std::string> Server::setCmdList(std::string clientRequest){
     }
     tokens.push_back(clientRequest);
 
+	return tokens;
+}
+
+void Server::cmdHandler(std::string clientRequest){
+	std::string cmdArr[] = {"JOIN", "USER", "KICK", "INVITE", "TOPIC", "MODE", "NICK"};
+	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
+
 	std::cout << tokens.at(0) << std::endl;
 	std::cout << tokens.at(1) << std::endl;
 	std::cout << tokens.at(2) << std::endl;
 	std::cout << tokens.at(3) << std::endl;
 	std::cout << tokens.at(4) << std::endl;
 	std::cout << tokens.at(5) << std::endl;
+	std::cout << tokens.at(6) << std::endl;
+	// void ((Server::*funcArr[]))() = {&Server::debug, &Server::info, &Server::warning, &Server::error};
+	// void ((Server::*funcArr[]))() = {&Server::Client::join()};
 
-	return tokens;
 }
-
-// void Server::cmdHandler(std::string clientRequest){
-// 	std::string cmdArr[] = {"JOIN", "USER", "KICK", "INVITE", "TOPIC", "MODE", "NICK"};
-// 	// void ((Server::*funcArr[]))() = {&Server::debug, &Server::info, &Server::warning, &Server::error};
-// 	// void ((Server::*funcArr[]))() = {&Server::Client::join()};
-
-// }
