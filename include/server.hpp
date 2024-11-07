@@ -84,15 +84,15 @@ typedef struct s_joinList {
 
 class Server {
     public:
-        Server(int m_serPort, std::string m_serPassword); //-> default constructor
-        ~Server(); //-> default constructor
-	    void serverInit(); //-> server initialization
-	    void serSocket(); //-> server socket creation
-	    void acceptNewClient(); //-> accept new client
-	    void receiveNewData(int fd); //-> receive new data from a registered client
-	    static void signalHandler(int signum); //-> signal handler
-	    void closeFds(); //-> close file descriptors
-	    void clearClients(int fd); //-> clear clients
+        Server(int m_serPort, std::string m_serPassword);
+        ~Server();
+	    void serverInit();
+	    void serSocket();
+	    void acceptNewClient();
+	    void receiveNewData(int fd);
+	    static void signalHandler(int signum);
+	    void closeFds();
+	    void clearClients(int fd);
 
 		/****************/
 		/* mid parssing */
@@ -104,14 +104,14 @@ class Server {
 
 
     private:
-        int serPort; //-> server port
+        int serPort;
         std::string serPassword;
-	    int serSocFd; //-> server socket file descriptor
-	    static bool sig; //-> static boolean for signal
-	    std::vector<Client> clients; //-> vector of clients
+	    int serSocFd;
+	    static bool sig;
+	    std::vector<Client> clients;
         // std::map<std::string, int> clientsMap;
         // std::map<std::string, int> channelMap;
-	    std::vector<struct pollfd> fds; //-> vector of pollfd
-		std::string command
+	    std::vector<struct pollfd> fds;
+		std::string command;
 
 };

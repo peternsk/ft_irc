@@ -27,56 +27,54 @@ void Server::serSocket()
 {
 	struct sockaddr_in add;
 	struct pollfd NewPoll;
-	add.sin_family = AF_INET; //-> set the address family to ipv4
+	add.sin_family = AF_INET;
     std::cout << YEL << "SERVER PORT: " << this->serPort << WHI << std::endl;
     std::cout << YEL << "SERVER PASS: " << this->serPassword << WHI << std::endl;
-	add.sin_port = htons(this->serPort); //-> convert the port to network byte order (big endian)
-	add.sin_addr.s_addr = INADDR_ANY; //-> set the address to any local machine address
+	add.sin_port = htons(this->serPort);
+	add.sin_addr.s_addr = INADDR_ANY;
 
-	this->serSocFd = socket(AF_INET, SOCK_STREAM, 0); //-> create the server socket
-	if(this->serSocFd == -1) //-> check if the socket is created
+	this->serSocFd = socket(AF_INET, SOCK_STREAM, 0);
+	if(this->serSocFd == -1)
 		throw(std::runtime_error("faild to create socket"));
 
 	int en = 1;
-	if(setsockopt(this->serSocFd, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1) //-> set the socket option (SO_REUSEADDR) to reuse the address
+	if(setsockopt(this->serSocFd, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1)
 		throw(std::runtime_error("faild to set option (SO_REUSEADDR) on socket"));
-	if (fcntl(this->serSocFd, F_SETFL, O_NONBLOCK) == -1) //-> set the socket option (O_NONBLOCK) for non-blocking socket
+	if (fcntl(this->serSocFd, F_SETFL, O_NONBLOCK) == -1)
 		throw(std::runtime_error("faild to set option (O_NONBLOCK) on socket"));
-	if (bind(this->serSocFd, (struct sockaddr *)&add, sizeof(add)) == -1) //-> bind the socket to the address
+	if (bind(this->serSocFd, (struct sockaddr *)&add, sizeof(add)) == -1)
 		throw(std::runtime_error("faild to bind socket"));
-	if (listen(this->serSocFd, SOMAXCONN) == -1) //-> listen for incoming connections and making the socket a passive socket
+	if (listen(this->serSocFd, SOMAXCONN) == -1)
 		throw(std::runtime_error("listen() faild"));
 
-	NewPoll.fd = this->serSocFd; //-> add the server socket to the pollfd
-	NewPoll.events = POLLIN; //-> set the event to POLLIN for reading data
-	NewPoll.revents = 0; //-> set the revents to 0
-	fds.push_back(NewPoll); //-> add the server socket to the pollfd
+	NewPoll.fd = this->serSocFd;
+	NewPoll.events = POLLIN;
+	NewPoll.revents = 0;
+	fds.push_back(NewPoll);
 }
 
 void Server::serverInit()
 {
-	serSocket(); //-> create the server socket
-
+	serSocket();
 	std::cout << GRE << "Server <" << serSocFd << "> Connected" << WHI << std::endl;
 	std::cout << "Waiting to accept a connection...\n";
-
-	while (Server::sig == false) //-> run the server until the signal is received
+	while (Server::sig == false)
 	{
-		if((poll(&fds[0],fds.size(),-1) == -1) && Server::sig == false) //-> wait for an event
+		if((poll(&fds[0],fds.size(),-1) == -1) && Server::sig == false)
 			throw(std::runtime_error("poll() faild"));
 
-		for (size_t i = 0; i < fds.size(); i++) //-> check all file descriptors
+		for (size_t i = 0; i < fds.size(); i++)
 		{
-			if (fds[i].revents & POLLIN)//-> check if there is data to read
+			if (fds[i].revents & POLLIN)
 			{
 				if (fds[i].fd == serSocFd)
-					acceptNewClient(); //-> accept new client
+					acceptNewClient();
 				else
-					receiveNewData(fds[i].fd); //-> receive new data from a registered client
+					receiveNewData(fds[i].fd);
 			}
 		}
 	}
-	closeFds(); //-> close the file descriptors when the server stops
+	closeFds();
 }
 
 bool Server::sig = false;
@@ -92,22 +90,22 @@ void Server::signalHandler(int signum){
 /********************/
 
 void Server::closeFds(){
-	for(size_t i = 0; i < clients.size(); i++){ //-> close all the clients
+	for(size_t i = 0; i < clients.size(); i++){
 		std::cout << RED << "Client <" << clients[i].GetFd() << "> Disconnected" << WHI << std::endl;
 		close(clients[i].GetFd());
 	}
-	if (serSocFd != -1){ //-> close the server socket
+	if (serSocFd != -1){
 		std::cout << RED << "Server <" << serSocFd << "> Disconnected" << WHI << std::endl;
 		close(serSocFd);
 	}
 }
 
-void Server::clearClients(int fd){ //-> clear the clients
-	for(size_t i = 0; i < fds.size(); i++){ //-> remove the client from the pollfd
+void Server::clearClients(int fd){
+	for(size_t i = 0; i < fds.size(); i++){
 		if (fds[i].fd == fd)
 			{fds.erase(fds.begin() + i); break;}
 	}
-	for(size_t i = 0; i < clients.size(); i++){ //-> remove the client from the vector of clients
+	for(size_t i = 0; i < clients.size(); i++){
 		if (clients[i].GetFd() == fd)
 			{clients.erase(clients.begin() + i); break;}
 	}
@@ -121,44 +119,44 @@ void Server::clearClients(int fd){ //-> clear the clients
 
 void Server::acceptNewClient()
 {
-	Client cli; //-> create a new client
+	Client cli;
 	struct sockaddr_in cliadd;
 	struct pollfd NewPoll;
 	socklen_t len = sizeof(cliadd);
 
-	int incofd = accept(serSocFd, (sockaddr *)&(cliadd), &len); //-> accept the new client
+	int incofd = accept(serSocFd, (sockaddr *)&(cliadd), &len);
 	if (incofd == -1)
 		{std::cout << "accept() failed" << std::endl; return;}
 
-	if (fcntl(incofd, F_SETFL, O_NONBLOCK) == -1) //-> set the socket option (O_NONBLOCK) for non-blocking socket
+	if (fcntl(incofd, F_SETFL, O_NONBLOCK) == -1)
 		{std::cout << "fcntl() failed" << std::endl; return;}
 
-	NewPoll.fd = incofd; //-> add the client socket to the pollfd
-	NewPoll.events = POLLIN; //-> set the event to POLLIN for reading data
-	NewPoll.revents = 0; //-> set the revents to 0
+	NewPoll.fd = incofd;
+	NewPoll.events = POLLIN;
+	NewPoll.revents = 0;
 
-	cli.SetFd(incofd); //-> set the client file descriptor
-	cli.setIpAdd(inet_ntoa((cliadd.sin_addr))); //-> convert the ip address to string and set it
-	clients.push_back(cli); //-> add the client to the vector of clients
-	fds.push_back(NewPoll); //-> add the client socket to the pollfd
+	cli.SetFd(incofd);
+	cli.setIpAdd(inet_ntoa((cliadd.sin_addr)));
+	clients.push_back(cli);
+	fds.push_back(NewPoll);
 
 	std::cout << GRE << "Client <" << incofd << "> Connected" << WHI << std::endl;
 }
 
 void Server::receiveNewData(int fd)
 {
-	char buff[1024]; //-> buffer for the received data
-	memset(buff, 0, sizeof(buff)); //-> clear the buffer
+	char buff[1024];
+	memset(buff, 0, sizeof(buff));
 
-	ssize_t bytes = recv(fd, buff, sizeof(buff) - 1 , 0); //-> receive the data
+	ssize_t bytes = recv(fd, buff, sizeof(buff) - 1 , 0);
 
-	if(bytes <= 0){ //-> check if the client disconnected
+	if(bytes <= 0){
 		std::cout << RED << "Client <" << fd << "> Disconnected" << WHI << std::endl;
-		clearClients(fd); //-> clear the client
-		close(fd); //-> close the client socket
+		clearClients(fd);
+		close(fd);
 	}
 
-	else{ //-> print the received data
+	else{
 		buff[bytes] = '\0';
 		std::cout << YEL << "Client <" << fd << "> Data: " << WHI << buff;
 		//here you can add your code to process the received data: parse, check, authenticate, handle the command, etc...
