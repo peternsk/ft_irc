@@ -182,65 +182,30 @@ void Server::receiveNewData(int fd)
 
 void Server::JOIN(std::vector<std::string> tokens){
 	std::cout << BLU << "unsing JOIN command" << WHI << std::endl;
-
-	std::cout << tokens.at(0) << std::endl;
-	std::cout << tokens.at(1) << std::endl;
-	std::cout << tokens.at(2) << std::endl;
-	std::cout << tokens.at(3) << std::endl;
 }
 
 void Server::USER(std::vector<std::string> tokens){
 	std::cout << BLU << "unsing USER command" << WHI << std::endl;
-
-	std::cout << tokens.at(0) << std::endl;
-	std::cout << tokens.at(1) << std::endl;
-	std::cout << tokens.at(2) << std::endl;
-	std::cout << tokens.at(3) << std::endl;
 }
 
 void Server::KICK(std::vector<std::string> tokens){
 	std::cout << BLU << "unsing KICK command" << WHI << std::endl;
-
-	std::cout << tokens.at(0) << std::endl;
-	std::cout << tokens.at(1) << std::endl;
-	std::cout << tokens.at(2) << std::endl;
-	std::cout << tokens.at(3) << std::endl;
 }
 
 void Server::INVITE(std::vector<std::string> tokens){
 	std::cout << BLU << "unsing INVITE command" << WHI << std::endl;
-
-	std::cout << tokens.at(0) << std::endl;
-	std::cout << tokens.at(1) << std::endl;
-	std::cout << tokens.at(2) << std::endl;
-	std::cout << tokens.at(3) << std::endl;
 }
 
 void Server::TOPIC(std::vector<std::string> tokens){
 	std::cout << BLU << "unsing TOPIC command" << WHI << std::endl;
-
-	std::cout << tokens.at(0) << std::endl;
-	std::cout << tokens.at(1) << std::endl;
-	std::cout << tokens.at(2) << std::endl;
-	std::cout << tokens.at(3) << std::endl;
 }
 
 void Server::MODE(std::vector<std::string> tokens){
 	std::cout << BLU << "unsing MODE command" << WHI << std::endl;
-
-	std::cout << tokens.at(0) << std::endl;
-	std::cout << tokens.at(1) << std::endl;
-	std::cout << tokens.at(2) << std::endl;
-	std::cout << tokens.at(3) << std::endl;
 }
 
 void Server::NICK(std::vector<std::string> tokens){
 	std::cout << BLU << "unsing NICK command" << WHI << std::endl;
-
-	std::cout << tokens.at(0) << std::endl;
-	std::cout << tokens.at(1) << std::endl;
-	std::cout << tokens.at(2) << std::endl;
-	std::cout << tokens.at(3) << std::endl;
 }
 
 
@@ -259,11 +224,11 @@ std::vector<std::string> Server::setCmdList(std::string clientRequest){
 		|| ((pos = clientRequest.find(",")) != std::string::npos)
 		|| ((pos = clientRequest.find('\n')) != std::string::npos)
 		|| ((pos = clientRequest.find('\t')) != std::string::npos)){
-        token = clientRequest.substr(0, pos);
 
+        token = clientRequest.substr(0, pos);
 		if(token[0] != ':' && tokens.empty() == 1){
         	tokens.push_back("EMPTY");
-        	tokens.push_back(token);
+        	// tokens.push_back(token);
 		}
         tokens.push_back(token);
         clientRequest.erase(0, pos + 1);
@@ -271,15 +236,17 @@ std::vector<std::string> Server::setCmdList(std::string clientRequest){
     tokens.push_back(clientRequest);
 
 	std::cout << BBLU << "------------------" << WHI << std::endl;
-	std::cout << BBLU << tokens.at(0) << WHI << std::endl;
+	std::cout << RED << tokens.at(0) << WHI << std::endl;
 	std::cout << BBLU << "------------------" << WHI << std::endl;
-	std::cout << BBLU << tokens.at(1) << WHI << std::endl;
+	std::cout << GRE << tokens.at(1) << WHI << std::endl;
 	std::cout << BBLU << "------------------" << WHI << std::endl;
-	std::cout << BBLU << tokens.at(2) << WHI << std::endl;
+	std::cout << YEL << tokens.at(2) << WHI << std::endl;
 	std::cout << BBLU << "------------------" << WHI << std::endl;
 	std::cout << BBLU << tokens.at(3) << WHI << std::endl;
 	std::cout << BBLU << "------------------" << WHI << std::endl;
 	std::cout << BBLU << tokens.at(4) << WHI << std::endl;
+	std::cout << BBLU << "------------------" << WHI << std::endl;
+	std::cout << BBLU << tokens.at(5) << WHI << std::endl;
 	std::cout << BBLU << "------------------" << WHI << std::endl;
 
 	return tokens;
@@ -306,4 +273,10 @@ void Server::cmdHandler(std::string clientRequest){
 	int cmdPos = Server::foundCmd(cmdList, tokens.at(1));
 	if(cmdPos >= 0)
     	(this->*cmdFuncArr[cmdPos])(tokens);
+}
+
+
+void Server::printVector(std::vector<std::string> tokens){
+	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
+    	std::cout << GRE << *it << WHI << std::endl;
 }
