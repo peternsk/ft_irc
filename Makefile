@@ -1,2 +1,5 @@
+
+
+
 IRC_HELP:
-	@./cmd_help_scripts/help.sh 
+	@./cmd_help_scripts/help.sh
