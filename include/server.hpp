@@ -115,8 +115,6 @@ class Server {
 	    static void signalHandler(int signum);
 	    void closeFds();
 	    void clearClients(int fd);
-		void irfLogo();
-
 		void ircLogo();
 
 		/****************/
@@ -125,7 +123,7 @@ class Server {
 
 		void setCmdList(std::string clientRequest);
 		int linkedListSize(t_cmdLinkedlist *cmdlist);
-		void cmdHandler();
+		void cmdHandler(std::string clientRequest);
 
 
     private:
