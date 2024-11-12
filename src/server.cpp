@@ -5,7 +5,7 @@
 /*            SERVER CONSTRUCTOR / DESTRUCTOR            */
 /*********************************************************/
 
-Server::Server(int m_serPort, std::string m_serPassword) 
+Server::Server(int m_serPort, std::string m_serPassword)
     : serPort(m_serPort), serPassword(m_serPassword){
     serSocFd = -1;
 }
@@ -23,7 +23,7 @@ Server::~Server(){
 /*   SERVER INIT    */
 /********************/
 
-void Server::irfLogo(){
+void Server::ircLogo(){
 
 	std::cout << "▒▓████▓▒ ▒▓███████▓▒   ▒▓██████▓▒ " << std::endl;
 	std::cout << "  ▒██▒   ▒▓█▓▒  ▒▓█▓▒ ▒▓█▓▒  ▒▓█▓▒" << std::endl;
@@ -176,6 +176,37 @@ void Server::receiveNewData(int fd)
 	}
 }
 
+/********************/
+/*    CMD DEF TEST   */
+/********************/
+
+void Server::JOIN(std::vector<std::string> tokens){
+	std::cout << BLU << "unsing JOIN command" << WHI << std::endl;
+}
+
+void Server::USER(std::vector<std::string> tokens){
+	std::cout << BLU << "unsing USER command" << WHI << std::endl;
+}
+
+void Server::KICK(std::vector<std::string> tokens){
+	std::cout << BLU << "unsing KICK command" << WHI << std::endl;
+}
+
+void Server::INVITE(std::vector<std::string> tokens){
+	std::cout << BLU << "unsing INVITE command" << WHI << std::endl;
+}
+
+void Server::TOPIC(std::vector<std::string> tokens){
+	std::cout << BLU << "unsing TOPIC command" << WHI << std::endl;
+}
+
+void Server::MODE(std::vector<std::string> tokens){
+	std::cout << BLU << "unsing MODE command" << WHI << std::endl;
+}
+
+void Server::NICK(std::vector<std::string> tokens){
+	std::cout << BLU << "unsing NICK command" << WHI << std::endl;
+}
 
 
 /********************/
@@ -189,29 +220,63 @@ std::vector<std::string> Server::setCmdList(std::string clientRequest){
 
     size_t pos = 0;
 
-    while (((pos = clientRequest.find(" ")) != std::string::npos) 
-		|| ((pos = clientRequest.find(",")) != std::string::npos)){
+    while (((pos = clientRequest.find(" ")) != std::string::npos)
+		|| ((pos = clientRequest.find(",")) != std::string::npos)
+		|| ((pos = clientRequest.find('\n')) != std::string::npos)
+		|| ((pos = clientRequest.find('\t')) != std::string::npos)){
+
         token = clientRequest.substr(0, pos);
+		if(token[0] != ':' && tokens.empty() == 1){
+        	tokens.push_back("EMPTY");
+        	// tokens.push_back(token);
+		}
         tokens.push_back(token);
         clientRequest.erase(0, pos + 1);
     }
     tokens.push_back(clientRequest);
 
+	std::cout << BBLU << "------------------" << WHI << std::endl;
+	std::cout << RED << tokens.at(0) << WHI << std::endl;
+	std::cout << BBLU << "------------------" << WHI << std::endl;
+	std::cout << GRE << tokens.at(1) << WHI << std::endl;
+	std::cout << BBLU << "------------------" << WHI << std::endl;
+	std::cout << YEL << tokens.at(2) << WHI << std::endl;
+	std::cout << BBLU << "------------------" << WHI << std::endl;
+	std::cout << BBLU << tokens.at(3) << WHI << std::endl;
+	std::cout << BBLU << "------------------" << WHI << std::endl;
+	std::cout << BBLU << tokens.at(4) << WHI << std::endl;
+	std::cout << BBLU << "------------------" << WHI << std::endl;
+	std::cout << BBLU << tokens.at(5) << WHI << std::endl;
+	std::cout << BBLU << "------------------" << WHI << std::endl;
+
 	return tokens;
+}
+
+int Server::foundCmd(std::list <std::string>&cmdArr, const std::string& cmd) {
+	int pos = 0;
+	for (std::list<std::string>::iterator it = cmdArr.begin(); it != cmdArr.end(); ++it) {
+		if(*it == cmd){
+    		std::cout << GRE << *it << WHI << std::endl;
+			return pos;
+		}
+		pos++;
+    }
+	return (std::cout << RED << "COMMAND NOT FOUND" << WHI << std::endl, -1);
 }
 
 void Server::cmdHandler(std::string clientRequest){
 	std::string cmdArr[] = {"JOIN", "USER", "KICK", "INVITE", "TOPIC", "MODE", "NICK"};
+	std::list<std::string> cmdList(cmdArr, cmdArr + 7);
 	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
+	void ((Server::*cmdFuncArr[]))(std::vector<std::string>tokens) = {&Server::JOIN, &Server::USER, &Server::KICK, &Server::INVITE, &Server::TOPIC, &Server::MODE, &Server::NICK};
 
-	std::cout << tokens.at(0) << std::endl;
-	std::cout << tokens.at(1) << std::endl;
-	std::cout << tokens.at(2) << std::endl;
-	std::cout << tokens.at(3) << std::endl;
-	std::cout << tokens.at(4) << std::endl;
-	std::cout << tokens.at(5) << std::endl;
-	std::cout << tokens.at(6) << std::endl;
-	// void ((Server::*funcArr[]))() = {&Server::debug, &Server::info, &Server::warning, &Server::error};
-	// void ((Server::*funcArr[]))() = {&Server::Client::join()};
+	int cmdPos = Server::foundCmd(cmdList, tokens.at(1));
+	if(cmdPos >= 0)
+    	(this->*cmdFuncArr[cmdPos])(tokens);
+}
 
+
+void Server::printVector(std::vector<std::string> tokens){
+	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
+    	std::cout << GRE << *it << WHI << std::endl;
 }
