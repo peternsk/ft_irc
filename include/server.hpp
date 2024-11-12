@@ -126,6 +126,7 @@ class Server {
 		int linkedListSize(t_cmdLinkedlist *cmdlist);
 		void cmdHandler(std::string clientRequest);
 		int foundCmd(std::list <std::string>&cmdArr, const std::string& cmd);
+		void printVector(std::vector<std::string> tokens);
 
 		void JOIN(std::vector<std::string> tokens);
 		void USER(std::vector<std::string> tokens);
@@ -147,3 +148,4 @@ class Server {
 		std::string command;
 
 };
+
