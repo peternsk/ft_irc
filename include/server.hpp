@@ -124,7 +124,16 @@ class Server {
 		void setCmdList(std::string clientRequest);
 		int linkedListSize(t_cmdLinkedlist *cmdlist);
 		void cmdHandler(std::string clientRequest);
+		int foundCmd(std::list <std::string>&cmdArr, const std::string& cmd);
+		void printVector(std::vector<std::string> tokens);
 
+		void JOIN(std::vector<std::string> tokens);
+		void USER(std::vector<std::string> tokens);
+		void KICK(std::vector<std::string> tokens);
+		void INVITE(std::vector<std::string> tokens);
+		void TOPIC(std::vector<std::string> tokens);
+		void MODE(std::vector<std::string> tokens);
+		void NICK(std::vector<std::string> tokens);
 
     private:
         int serPort;
@@ -138,3 +147,4 @@ class Server {
 		std::string command;
 
 };
+
