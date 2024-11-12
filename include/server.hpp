@@ -55,16 +55,6 @@ public:
 /*********************************************************/
 
 /* 	
-std::string command; -> the argument of the command
-s_cmdLinkedlist *next; -> next node
-*/
-typedef struct s_cmdLinkedlist {
-	std::string command;
-	s_cmdLinkedlist *next;
-} t_cmdLinkedlist;
-
-
-/* 	
 std::string channel; -> the channel that the user want to join.
 std::string key; -> the key to the channel that user need.
 bool leaving; -. if there is a Zero, the client  is leaving all or one channel
@@ -93,14 +83,15 @@ class Server {
 	    static void signalHandler(int signum);
 	    void closeFds();
 	    void clearClients(int fd);
+		void irfLogo();
 
 		/****************/
 		/* mid parssing */
 		/****************/
 
-		void setCmdList(std::string clientRequest);
-		int linkedListSize(t_cmdLinkedlist *cmdlist);
-		void cmdHandler();
+		std::vector<std::string> setCmdList(std::string clientRequest);
+		int linkedListSize();
+		void cmdHandler(std::string clientRequest);
 
 
     private:
