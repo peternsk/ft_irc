@@ -30,23 +30,35 @@
 
 // C++ program to demonstrate a custom exception class
 
-#include <exception>
+// #include <exception>
+// #include <iostream>
+// #include <string>
+
+// using namespace std;
+
+// class MyException : public std::runtime_error {
+// public:
+//     MyException(const std::string& msg) : std::runtime_error(msg) {}
+// };
+
+// int main() {
+//     try {
+//         throw MyException("Something went wrong!");
+//     }
+//     catch (const std::exception& e) {
+//         cout << "Caught an exception: " << e.what() << endl;
+//     }
+//     return 0;
+// }
+
+
+
 #include <iostream>
 #include <string>
+#include "Error.hpp"
 
-using namespace std;
+int main(void){
+    Error err;
 
-class MyException : public std::runtime_error {
-public:
-    MyException(const std::string& msg) : std::runtime_error(msg) {}
-};
-
-int main() {
-    try {
-        throw MyException("Something went wrong!");
-    }
-    catch (const std::exception& e) {
-        cout << "Caught an exception: " << e.what() << endl;
-    }
-    return 0;
+    std::cout << err.ERR_BADCHANMASK() << std::endl;
 }

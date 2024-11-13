@@ -7,13 +7,12 @@ const std::string ERR_NONICKNAMEGIVEN  = "431 :No nickname given";
 class Error
 {
     private:
-        // Error();
-        // Error(Error &obj);
-        // Error &operator=(Error &ob);
-        // std::string name;
+        Error(Error &obj);
+        Error &operator=(Error &ob);
 
     public:
-        // ~Error();
+        Error();
+        ~Error();
         // Error( /* class server */ server *obj );
         // std::string ERR_NONICKNAMEGIVEN  () ""; 
         std::string ERR_ERRONEUSNICKNAME  () const; 
@@ -31,7 +30,6 @@ class Error
         std::string ERR_TOOMANYCHANNELS     (); 
         std::string ERR_TOOMANYTARGETS    (); 
         std::string RPL_TOPIC    (); 
-        std::string ERR_UNAVAILRESOURCE    (); 
         std::string ERR_CHANOPRIVSNEEDED    (); 
         std::string ERR_USERNOTINCHANNEL    (); 
         std::string ERR_NOTONCHANNEL   (); 
@@ -40,9 +38,6 @@ class Error
         std::string RPL_INVITING     (); 
         std::string RPL_AWAY    (); 
         std::string ERR_NOCHANMODES    (); 
-        std::string ERR_KEYSET   (); 
-        std::string ERR_NOCHANMODES  (); 
-        std::string ERR_CHANOPRIVSNEEDED (); 
         std::string ERR_UNKNOWNMODE (); 
         std::string RPL_CHANNELMODEIS (); 
         std::string RPL_BANLIST(); 
@@ -52,6 +47,7 @@ class Error
         std::string RPL_INVITELIST  (); 
         std::string RPL_ENDOFINVITELIST (); 
         std::string RPL_UNIQOPIS (); 
+        std::string ERR_KEYSET(); 
 };
 
 #endif
