@@ -115,7 +115,6 @@ class Server {
 	    static void signalHandler(int signum);
 	    void closeFds();
 	    void clearClients(int fd);
-
 		void ircLogo();
 
 		/****************/
