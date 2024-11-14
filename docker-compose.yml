@@ -1,0 +1,10 @@
+services:
+  weechat:
+    image: weechat/weechat
+    platform: linux/amd64  # This tells Docker to use QEMU for emulation
+    container_name: weechat
+    volumes:
+      - ./weechat:/home/weechat/.weechat
+    environment:
+      - TERM=xterm-256color
+    restart: unless-stopped
