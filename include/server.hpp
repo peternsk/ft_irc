@@ -121,7 +121,7 @@ class Server {
 		/* mid parssing */
 		/****************/
 
-		void setCmdList(std::string clientRequest);
+		std::vector<std::string>  setCmdList(std::string clientRequest);
 		int linkedListSize(t_cmdLinkedlist *cmdlist);
 		void cmdHandler(std::string clientRequest);
 		int foundCmd(std::list <std::string>&cmdArr, const std::string& cmd);
