@@ -76,7 +76,7 @@ public:
 /*                STRUCTS / LINKED LIST                  */
 /*********************************************************/
 
-/* 	
+/*
 std::string command; -> the argument of the command
 s_cmdLinkedlist *next; -> next node
 */
@@ -121,19 +121,30 @@ class Server {
 		/* mid parssing */
 		/****************/
 
-		std::vector<std::string>  setCmdList(std::string clientRequest);
-		int linkedListSize(t_cmdLinkedlist *cmdlist);
-		void cmdHandler(std::string clientRequest);
+		std::vector<std::string> setCmdList(std::string clientRequest);
+		void cmdHandler(int fd, std::string clientRequest);
 		int foundCmd(std::list <std::string>&cmdArr, const std::string& cmd);
 		void printVector(std::vector<std::string> tokens);
 
-		void JOIN(std::vector<std::string> tokens);
-		void USER(std::vector<std::string> tokens);
-		void KICK(std::vector<std::string> tokens);
-		void INVITE(std::vector<std::string> tokens);
-		void TOPIC(std::vector<std::string> tokens);
-		void MODE(std::vector<std::string> tokens);
-		void NICK(std::vector<std::string> tokens);
+		/****************/
+		/*   CMD FUNC   */
+		/****************/
+
+		void JOIN(Client &m_client ,std::vector<std::string> tokens);
+		void USER(Client &m_client ,std::vector<std::string> tokens);
+		void KICK(Client &m_client ,std::vector<std::string> tokens);
+		void INVITE(Client &m_client ,std::vector<std::string> tokens);
+		void TOPIC(Client &m_client ,std::vector<std::string> tokens);
+		void MODE(Client &m_client ,std::vector<std::string> tokens);
+		void NICK(Client &m_client ,std::vector<std::string> tokens);
+		void PRIVMSG(Client &m_client ,std::vector<std::string> tokens);
+
+		/****************/
+		/* handle class */
+		/****************/
+
+		Client& getClientClass(int fd);
+		void addClientToList(int fd);
 
     private:
         int serPort;

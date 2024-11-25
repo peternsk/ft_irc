@@ -78,6 +78,7 @@ void Server::serverInit()
 
 		for (size_t i = 0; i < fds.size(); i++)
 		{
+			std::cout << "test 1...\n";
 			if (fds[i].revents & POLLIN)
 			{
 				if (fds[i].fd == serSocFd)
@@ -132,6 +133,7 @@ void Server::clearClients(int fd){
 
 void Server::acceptNewClient()
 {
+	std::cout << "test 2...\n";
 	Client cli;
 	struct sockaddr_in cliadd;
 	struct pollfd NewPoll;
@@ -156,23 +158,21 @@ void Server::acceptNewClient()
 	std::cout << GRE << "Client <" << incofd << "> Connected" << WHI << std::endl;
 }
 
-void Server::receiveNewData(int fd)
+void Server::receiveNewData(int m_fd)
 {
 	char buff[1024];
 	memset(buff, 0, sizeof(buff));
 
-	ssize_t bytes = recv(fd, buff, sizeof(buff) - 1 , 0);
+	ssize_t bytes = recv(m_fd, buff, sizeof(buff) - 1 , 0);
 
 	if(bytes <= 0){
-		std::cout << RED << "Client <" << fd << "> Disconnected" << WHI << std::endl;
-		clearClients(fd);
-		close(fd);
+		std::cout << RED << "Client <" << m_fd << "> Disconnected" << WHI << std::endl;
+		clearClients(m_fd);
+		close(m_fd);
 	}
 	else{
 		buff[bytes] = '\0';
-		Server::cmdHandler(buff);
-		// std::cout << YEL << "Client <" << fd << "> Data: " << WHI << buff;
-		//here you can add your code to process the received data: parse, check, authenticate, handle the command, etc...
+		Server::cmdHandler(m_fd, buff);
 	}
 }
 
@@ -180,38 +180,51 @@ void Server::receiveNewData(int fd)
 /*    CMD DEF TEST   */
 /********************/
 
-void Server::JOIN(std::vector<std::string> tokens){
+void Server::JOIN(Client &m_client ,std::vector<std::string> tokens){
+	(void)m_client;
 	std::cout << BLU << "unsing JOIN command" << WHI << std::endl;
 	Server::printVector(tokens);
 }
 
-void Server::USER(std::vector<std::string> tokens){
+void Server::USER(Client &m_client ,std::vector<std::string> tokens){
+	(void)m_client;
 	std::cout << BLU << "unsing USER command" << WHI << std::endl;
 	Server::printVector(tokens);
 }
 
-void Server::KICK(std::vector<std::string> tokens){
+void Server::KICK(Client &m_client ,std::vector<std::string> tokens){
+	(void)m_client;
 	std::cout << BLU << "unsing KICK command" << WHI << std::endl;
 	Server::printVector(tokens);
 }
 
-void Server::INVITE(std::vector<std::string> tokens){
+void Server::INVITE(Client &m_client ,std::vector<std::string> tokens){
+	(void)m_client;
 	std::cout << BLU << "unsing INVITE command" << WHI << std::endl;
 	Server::printVector(tokens);
 }
 
-void Server::TOPIC(std::vector<std::string> tokens){
+void Server::TOPIC(Client &m_client ,std::vector<std::string> tokens){
+	(void)m_client;
 	std::cout << BLU << "unsing TOPIC command" << WHI << std::endl;
 	Server::printVector(tokens);
 }
 
-void Server::MODE(std::vector<std::string> tokens){
+void Server::MODE(Client &m_client ,std::vector<std::string> tokens){
+	(void)m_client;
 	std::cout << BLU << "unsing MODE command" << WHI << std::endl;
 	Server::printVector(tokens);
 }
 
-void Server::NICK(std::vector<std::string> tokens){
+void Server::NICK(Client &m_client ,std::vector<std::string> tokens){
+	(void)m_client;
 	std::cout << BLU << "unsing NICK command" << WHI << std::endl;
+	Server::printVector(tokens);
+}
+
+void Server::PRIVMSG(Client &m_client ,std::vector<std::string> tokens){
+	(void)m_client;
+	std::cout << BLU << "unsing PRIVMSG command" << WHI << std::endl;
 	Server::printVector(tokens);
 }
 
@@ -257,15 +270,16 @@ int Server::foundCmd(std::list <std::string>&cmdArr, const std::string& cmd) {
 	return (std::cout << RED << "COMMAND NOT FOUND" << WHI << std::endl, -1);
 }
 
-void Server::cmdHandler(std::string clientRequest){
-	std::string cmdArr[] = {"JOIN", "USER", "KICK", "INVITE", "TOPIC", "MODE", "NICK"};
-	std::list<std::string> cmdList(cmdArr, cmdArr + 7);
+void Server::cmdHandler(int m_fd, std::string clientRequest){
+	std::string cmdArr[] = {"JOIN", "USER", "KICK", "INVITE", "TOPIC", "MODE", "NICK", "PRIVMSG"};
+	std::list<std::string> cmdList(cmdArr, cmdArr + 8);
 	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
-	void ((Server::*cmdFuncArr[]))(std::vector<std::string>tokens) = {&Server::JOIN, &Server::USER, &Server::KICK, &Server::INVITE, &Server::TOPIC, &Server::MODE, &Server::NICK};
+	void ((Server::*cmdFuncArr[]))(Client &m_client, std::vector<std::string>tokens) = {&Server::JOIN, &Server::USER, &Server::KICK,
+			&Server::INVITE, &Server::TOPIC, &Server::MODE, &Server::NICK, &Server::PRIVMSG};
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
 	if(cmdPos >= 0)
-    	(this->*cmdFuncArr[cmdPos])(tokens);
+    	(this->*cmdFuncArr[cmdPos])(getClientClass(m_fd), tokens);
 }
 
 
@@ -274,4 +288,28 @@ void Server::printVector(std::vector<std::string> tokens){
 		std::cout << BBLU << "------------------" << WHI << std::endl;
     	std::cout << GRE << *it << WHI << std::endl;
 	}
+}
+
+
+/****************/
+/* Client class */
+/****************/
+
+void Server::addClientToList(int fd){
+	/*
+
+	*/
+	std::cout << MAG << "Client FD : " << LBLU << fd << std::endl;
+}
+
+Client& Server::getClientClass(int fd){
+
+	std::vector<Client>::iterator it;
+	for (it = clients.begin(); it != clients.end(); ++it) {
+		if(it->GetFd() == fd){
+			std::cout << MAG << "Client FD : " << LBLU << it->GetFd() << std::endl;
+			break;
+		}
+	}
+	return *it;
 }
