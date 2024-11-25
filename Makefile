@@ -1,15 +1,45 @@
-JOIN = echo "````"
-help: ## Offer a list of documentation URL links
-	@clear
-	@echo "Select a command:"
-	@echo "  0. JOIN"
-	@read url_choice; \
-    case $$url_choice in \
-        0) CHOICE=$(URL_DOCKER);; \
-        *) echo "Invalid choice. Exiting." ; exit 1;; \
-    esac; \
-    open $$CHOICE
-	@clear
-	@echo "Opening documentation..."
 
-.PHONY: doc
+
+#--- BASIC ---#
+NAME        = irc
+CC          = c++
+FLAGS       = -std=c++98 -Wall -Wextra -Werror -I./includes
+RM          = rm -rf
+
+#--- GROUP ---#
+SRCS_DIR    = srcs
+OBJS_DIR    = objs
+CLASSES     = channel client operator server
+MAIN        = main
+
+SRCS        = $(addsuffix .cpp, $(addprefix $(SRCS_DIR)/classes/, $(CLASSES))) \
+              $(addsuffix .cpp, $(addprefix $(SRCS_DIR)/main/, $(MAIN)))
+
+OBJS        = $(SRCS:$(SRCS_DIR)/%.cpp=$(OBJS_DIR)/%.o)
+
+#--- COLOR ---#
+BLACK       = \033[90;1m
+RESET       = \033[0m
+
+#--- TARGET ---#
+all: ${NAME}
+
+${OBJS_DIR}/%.o: ${SRCS_DIR}/%.cpp
+	@mkdir -p ${@D}
+	@${CC} ${FLAGS} -c $< -o $@
+	@echo "$(BLACK)Compiling: $< $(RESET)"
+
+${NAME}: ${OBJS}
+	@${CC} ${FLAGS} ${OBJS} -o ${NAME}
+	@echo "$(BLACK)Compilation completed successfully!$(RESET)"
+
+clean:
+	@${RM} ${OBJS_DIR}
+	@echo "$(BLACK)Cleanup completed successfully!$(RESET)"
+
+fclean: clean
+	@${RM} ${NAME}
+
+re: fclean all
+
+.PHONY: all clean fclean re
