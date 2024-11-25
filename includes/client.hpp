@@ -1,9 +1,9 @@
-// #pragma once
+#pragma once
 
 #include "ft_irc.hpp"
 #include "channel.hpp"
 
-class channel;
+class Channel;
 
 class Client {
 public :
@@ -13,20 +13,23 @@ public :
 	Client(std::string name);
 	~Client();
 
-	bool isPartChan(channel *chan);
-	void setChop(bool SetChop, channel * chan);
+	bool isPartChan(Channel *chan);
+	void setChop(bool SetChop, Channel * chan);
 	void setName(std::string name);
-	bool getChop(channel * chan) ;
+	bool getChop(Channel * chan) ;
 	std::string getName(void);
 
-	void join(channel *chan);
-	void removeChan(channel *chan);
+	Channel *join(std::string name);
+	void join(Channel *chan);
 
-	void kick(Client * client, channel * chan);
+	void removeChan(Channel *chan);
+
+	void kick(Client * client, Channel * chan);
 
 private :
-	std::map <channel *, bool > _channels;
+	std::map <Channel *, bool > _Channels;
 	std::string _name;
+	// int fd;
 };
 
 // 1.2.1 Operators
@@ -49,7 +52,7 @@ private :
 //    destructive and annoying.  For further details on this type of
 //    action, see section 4.6.1 (KILL).
 
-//         KICK    - Eject a Client from the channel
-//         MODE    - Change the channel's mode
-//         INVITE  - Invite a Client to an invite-only channel (mode +i)
-//         TOPIC   - Change the channel topic in a mode +t channel
+//         KICK    - Eject a Client from the Channel
+//         MODE    - Change the Channel's mode
+//         INVITE  - Invite a Client to an invite-only Channel (mode +i)
+//         TOPIC   - Change the Channel topic in a mode +t Channel

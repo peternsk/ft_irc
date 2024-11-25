@@ -1,17 +1,18 @@
 #include "client.hpp"
 
 	Client::Client() {}
-	Client::~Client() {}
+	Client::~Client() {
+	}
 
 	Client::Client(std::string name) : _name(name) {}
 
-	void Client::setChop(bool SetChop, channel * chan) {
-		if (_channels.find(chan) != _channels.end())
-		_channels[chan] = SetChop;
+	void Client::setChop(bool SetChop, Channel * chan) {
+		if (_Channels.find(chan) != _Channels.end())
+		_Channels[chan] = SetChop;
 	}
 
-	bool Client::getChop(channel * chan) {
-		return _channels[chan];
+	bool Client::getChop(Channel * chan) {
+		return _Channels[chan];
 	}
 
 	std::string Client::getName(void) {
@@ -22,43 +23,49 @@
 		_name = name;
 	}
 
-	void Client::join(channel *chan) {
-		if (_channels.find(chan) != _channels.end())
-			return ;
-		if (chan->getNbPeople() == 0)
-			_channels[chan] = true;
-		else
-			_channels[chan] = false;
+	Channel *Client::join(std::string name) {
+		Channel *newChan = new Channel(name);
+		newChan->addClient(this);
+		_Channels[newChan] = true;
+		return newChan;
 	}
 
-	void Client::kick(Client * client, channel *chan) {
+	void Client::join(Channel *chan) {
+		if (_Channels.find(chan) != _Channels.end())
+			throw std::exception(); // change the exepiton "tried to join a Channel already in"
+		_Channels[chan] = false;
+		chan->addClient(this);
+	}
+
+	void Client::kick(Client * client, Channel *chan) {
 		if (!client || !chan)
 			return ;
-		if (_channels.find(chan) != _channels.end())
+		if (_Channels.find(chan) != _Channels.end())
 		{
-			p("yes");
-			if (_channels[chan] == true && client->isPartChan(chan))
+			if (_Channels[chan] == true && client->isPartChan(chan))
 			{
 				client->removeChan(chan);
 				chan->kick(client);
 			}
+			// else return dont have permition ou que le client nest pas dans le channel
 		}
+		// else retourne client is not in the channel
 	}
 
-	void Client::removeChan(channel *chan) {
-		std::map < channel *, bool >::iterator it = _channels.find(chan);
-		if (it != _channels.end())
-			_channels.erase(it);
+	void Client::removeChan(Channel *chan) {
+		std::map < Channel *, bool >::iterator it = _Channels.find(chan);
+		if (it != _Channels.end())
+			_Channels.erase(it);
 	}
 
-	bool Client::isPartChan(channel *chan) {
-		if (_channels.find(chan) != _channels.end())
+	bool Client::isPartChan(Channel *chan) {
+		if (_Channels.find(chan) != _Channels.end())
 			return true;
 		return false;
 	}
 
 	void Client::showChannels(void) {
-		for (std::map <channel *, bool >::iterator it = _channels.begin(); it != _channels.end(); ++it)
+		for (std::map <Channel *, bool >::iterator it = _Channels.begin(); it != _Channels.end(); ++it)
 		{
 			std::cout << it->first->getName() << std::endl;
 		}

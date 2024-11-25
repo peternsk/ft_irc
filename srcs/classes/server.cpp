@@ -1,4 +1,4 @@
-#include "/server.hpp"
+#include "server.hpp"
 
 
 /*********************************************************/
@@ -180,53 +180,53 @@ void Server::receiveNewData(int m_fd)
 /*    CMD DEF TEST   */
 /********************/
 
-void Server::JOIN(Client &m_client ,std::vector<std::string> tokens){
-	(void)m_client;
-	std::cout << BLU << "unsing JOIN command" << WHI << std::endl;
-	Server::printVector(tokens);
-}
+// void Server::JOIN(Client &m_client ,std::vector<std::string> tokens){
+// 	(void)m_client;
+// 	std::cout << BLU << "unsing JOIN command" << WHI << std::endl;
+// 	Server::printVector(tokens);
+// }
 
-void Server::USER(Client &m_client ,std::vector<std::string> tokens){
-	(void)m_client;
-	std::cout << BLU << "unsing USER command" << WHI << std::endl;
-	Server::printVector(tokens);
-}
+// void Server::USER(Client &m_client ,std::vector<std::string> tokens){
+// 	(void)m_client;
+// 	std::cout << BLU << "unsing USER command" << WHI << std::endl;
+// 	Server::printVector(tokens);
+// }
 
-void Server::KICK(Client &m_client ,std::vector<std::string> tokens){
-	(void)m_client;
-	std::cout << BLU << "unsing KICK command" << WHI << std::endl;
-	Server::printVector(tokens);
-}
+// void Server::KICK(Client &m_client ,std::vector<std::string> tokens){
+// 	(void)m_client;
+// 	std::cout << BLU << "unsing KICK command" << WHI << std::endl;
+// 	Server::printVector(tokens);
+// }
 
-void Server::INVITE(Client &m_client ,std::vector<std::string> tokens){
-	(void)m_client;
-	std::cout << BLU << "unsing INVITE command" << WHI << std::endl;
-	Server::printVector(tokens);
-}
+// void Server::INVITE(Client &m_client ,std::vector<std::string> tokens){
+// 	(void)m_client;
+// 	std::cout << BLU << "unsing INVITE command" << WHI << std::endl;
+// 	Server::printVector(tokens);
+// }
 
-void Server::TOPIC(Client &m_client ,std::vector<std::string> tokens){
-	(void)m_client;
-	std::cout << BLU << "unsing TOPIC command" << WHI << std::endl;
-	Server::printVector(tokens);
-}
+// void Server::TOPIC(Client &m_client ,std::vector<std::string> tokens){
+// 	(void)m_client;
+// 	std::cout << BLU << "unsing TOPIC command" << WHI << std::endl;
+// 	Server::printVector(tokens);
+// }
 
-void Server::MODE(Client &m_client ,std::vector<std::string> tokens){
-	(void)m_client;
-	std::cout << BLU << "unsing MODE command" << WHI << std::endl;
-	Server::printVector(tokens);
-}
+// void Server::MODE(Client &m_client ,std::vector<std::string> tokens){
+// 	(void)m_client;
+// 	std::cout << BLU << "unsing MODE command" << WHI << std::endl;
+// 	Server::printVector(tokens);
+// }
 
-void Server::NICK(Client &m_client ,std::vector<std::string> tokens){
-	(void)m_client;
-	std::cout << BLU << "unsing NICK command" << WHI << std::endl;
-	Server::printVector(tokens);
-}
+// void Server::NICK(Client &m_client ,std::vector<std::string> tokens){
+// 	(void)m_client;
+// 	std::cout << BLU << "unsing NICK command" << WHI << std::endl;
+// 	Server::printVector(tokens);
+// }
 
-void Server::PRIVMSG(Client &m_client ,std::vector<std::string> tokens){
-	(void)m_client;
-	std::cout << BLU << "unsing PRIVMSG command" << WHI << std::endl;
-	Server::printVector(tokens);
-}
+// void Server::PRIVMSG(Client &m_client ,std::vector<std::string> tokens){
+// 	(void)m_client;
+// 	std::cout << BLU << "unsing PRIVMSG command" << WHI << std::endl;
+// 	Server::printVector(tokens);
+// }
 
 
 /********************/

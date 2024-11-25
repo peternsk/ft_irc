@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "files.associations": {
 <<<<<<< HEAD
 		"iosfwd": "cpp",
@@ -29,6 +30,21 @@
 		"cmath": "cpp",
 		"complex": "cpp",
 		"csignal": "cpp",
+=======
+	"C_Cpp.errorSquiggles": "disabled",
+	"files.associations": {
+		"ostream": "cpp",
+		"array": "cpp",
+		"atomic": "cpp",
+		"bit": "cpp",
+		"*.tcc": "cpp",
+		"cctype": "cpp",
+		"clocale": "cpp",
+		"cmath": "cpp",
+		"codecvt": "cpp",
+		"compare": "cpp",
+		"concepts": "cpp",
+>>>>>>> fcbea662e7a98636a79284988a23df8485f4ddbb
 		"cstdarg": "cpp",
 		"cstddef": "cpp",
 		"cstdint": "cpp",
@@ -38,6 +54,7 @@
 		"ctime": "cpp",
 		"cwchar": "cpp",
 		"cwctype": "cpp",
+<<<<<<< HEAD
 		"exception": "cpp",
 		"functional": "cpp",
 		"initializer_list": "cpp",
@@ -56,10 +73,29 @@
 		"sstream": "cpp",
 		"streambuf": "cpp",
 		"string": "cpp",
+=======
+		"deque": "cpp",
+		"list": "cpp",
+		"map": "cpp",
+		"string": "cpp",
+		"unordered_map": "cpp",
+		"vector": "cpp",
+		"exception": "cpp",
+		"algorithm": "cpp",
+		"functional": "cpp",
+		"iterator": "cpp",
+		"memory": "cpp",
+		"memory_resource": "cpp",
+		"numeric": "cpp",
+		"optional": "cpp",
+		"random": "cpp",
+		"ratio": "cpp",
+>>>>>>> fcbea662e7a98636a79284988a23df8485f4ddbb
 		"string_view": "cpp",
 		"system_error": "cpp",
 		"tuple": "cpp",
 		"type_traits": "cpp",
+<<<<<<< HEAD
 		"typeinfo": "cpp",
 		"unordered_map": "cpp",
 		"utility": "cpp",
@@ -140,3 +176,24 @@
     }
 }
 >>>>>>> eed9f5d56f82ca51e076c74d0dc33ce6a1d977f0
+=======
+		"utility": "cpp",
+		"fstream": "cpp",
+		"initializer_list": "cpp",
+		"iomanip": "cpp",
+		"iosfwd": "cpp",
+		"iostream": "cpp",
+		"istream": "cpp",
+		"limits": "cpp",
+		"new": "cpp",
+		"numbers": "cpp",
+		"sstream": "cpp",
+		"stdexcept": "cpp",
+		"streambuf": "cpp",
+		"cinttypes": "cpp",
+		"typeinfo": "cpp",
+		"*.tpp": "cpp",
+		"set": "cpp"
+	}
+}
+>>>>>>> fcbea662e7a98636a79284988a23df8485f4ddbb
