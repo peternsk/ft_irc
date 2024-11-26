@@ -1,4 +1,8 @@
-#include "server.hpp"
+// #include "server.hpp"
+// #include "cmdUtils.hpp"
+// #include "cmd.hpp"
+
+#include "ft_irc.hpp"
 
 
 /*********************************************************/
@@ -271,15 +275,18 @@ int Server::foundCmd(std::list <std::string>&cmdArr, const std::string& cmd) {
 }
 
 void Server::cmdHandler(int m_fd, std::string clientRequest){
-	std::string cmdArr[] = {"JOIN", "USER", "KICK", "INVITE", "TOPIC", "MODE", "NICK", "PRIVMSG"};
+	std::string cmdArr[] = {"join", "user", "kick", "invite", "topic", "mode", "nick", "msg"};
+
 	std::list<std::string> cmdList(cmdArr, cmdArr + 8);
+
 	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
-	void ((Server::*cmdFuncArr[]))(Client &m_client, std::vector<std::string>tokens) = {&Server::JOIN, &Server::USER, &Server::KICK,
-			&Server::INVITE, &Server::TOPIC, &Server::MODE, &Server::NICK, &Server::MSG};
+
+	void ((Server::*cmdFuncArr[]))(Cmd &cmd) = {CMD::join, CMD::kick,
+			CMD::invite, CMD::topic, CMD::mode, CMD::nick, CMD::msg};
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
-	if(cmdPos >= 0)
-    	(this->*cmdFuncArr[cmdPos])(getClientClass(m_fd), tokens);
+	// if(cmdPos >= 0)
+    	// (this->*cmdFuncArr[cmdPos])(getClientClass(m_fd), tokens);
 }
 
 

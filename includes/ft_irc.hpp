@@ -45,6 +45,16 @@
 //class
 #include "channel.hpp"
 #include "client.hpp"
+#include "server.hpp"
+
+//namespaces
+#include "cmd.hpp"
+#include "cmdUtils.hpp"
+
+
+//cmd struct
+#include "struct.hpp"
+#include "cmd.hpp"
 
 
 #define p(x) std::cout << x << std::endl;

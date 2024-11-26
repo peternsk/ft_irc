@@ -1,4 +1,6 @@
-#include "channel.hpp"
+
+#include "ft_irc.hpp"
+// #include "channel.hpp"
 
 	// channel::channel() {
 

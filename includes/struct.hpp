@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CMD_STRUCT_HPP
+#define CMD_STRUCT_HPP
 
 struct Cmd {
 	short cmd;
@@ -8,3 +9,6 @@ struct Cmd {
 	Client * client;
 	Channel * chan;
 };
+
+#endif
+ 

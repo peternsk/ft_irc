@@ -1,4 +1,4 @@
-#include "cmd.hpp"
+#include "ft_irc.hpp"
 
 namespace CMD {
 	// si la commande est join
