@@ -17,6 +17,7 @@ public :
 	void setChop(bool SetChop, Channel * chan);
 	void setName(std::string name);
 	bool getChop(Channel * chan) ;
+	
 	std::string getName(void);
 
 	Channel *join(std::string name);
@@ -26,10 +27,17 @@ public :
 
 	void kick(Client * client, Channel * chan);
 
+	/*===== AJOUT PETER=====*/
+	int GetFd();
+
+	void SetFd(int fd);
+	void setIpAdd(std::string ipadd);
+
 private :
 	std::map <Channel *, bool > _Channels;
 	std::string _name;
-	// int fd;
+	int _fd;
+	std::string _IPadd;
 };
 
 // 1.2.1 Operators

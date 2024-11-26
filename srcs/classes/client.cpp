@@ -52,6 +52,24 @@
 		// else retourne client is not in the channel
 	}
 
+	/********************/
+	/*   AJOUT PETER    */
+	/********************/
+
+	int  Client::GetFd(){
+		return this->_fd;
+	}
+
+	void Client::SetFd(int fd){
+		this->_fd = fd;
+	}
+
+	void Client::setIpAdd(std::string ipadd){
+		this->_IPadd = ipadd;
+	}
+
+
+
 	void Client::removeChan(Channel *chan) {
 		std::map < Channel *, bool >::iterator it = _Channels.find(chan);
 		if (it != _Channels.end())

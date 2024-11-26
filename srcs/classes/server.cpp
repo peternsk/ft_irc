@@ -275,7 +275,7 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 	std::list<std::string> cmdList(cmdArr, cmdArr + 8);
 	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
 	void ((Server::*cmdFuncArr[]))(Client &m_client, std::vector<std::string>tokens) = {&Server::JOIN, &Server::USER, &Server::KICK,
-			&Server::INVITE, &Server::TOPIC, &Server::MODE, &Server::NICK, &Server::PRIVMSG};
+			&Server::INVITE, &Server::TOPIC, &Server::MODE, &Server::NICK, &Server::MSG};
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
 	if(cmdPos >= 0)
