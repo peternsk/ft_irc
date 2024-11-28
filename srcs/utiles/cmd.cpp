@@ -1,5 +1,4 @@
-#include "ft_irc.hpp"
-
+#include "cmd.hpp"
 namespace CMD {
 	// si la commande est join
 // JOIN #channel
