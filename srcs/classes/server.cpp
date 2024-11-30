@@ -281,12 +281,18 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 
 	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
 
-	void ((Server::*cmdFuncArr[]))(Cmd &cmd) = {CMD::join, CMD::kick,
-			CMD::invite, CMD::topic, CMD::mode, CMD::nick, CMD::msg};
+	void ((Server::*cmdFuncArr[]))(const Cmd &cmd) = {CMD::join, CMD::kick,
+			CMD::topic, CMD::mode, CMD::nick, CMD::msg};
+
+		//+++++++++++ vectorToStruct +++++++++++
+		//	take a string vector and tranfer every element
+		//	to the appropriate section of the string, and
+		//	return the struct.
+		//
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
 	// if(cmdPos >= 0)
-    	// (this->*cmdFuncArr[cmdPos])(getClientClass(m_fd), tokens);
+    // 	(this->*cmdFuncArr[cmdPos])(getClientClass(m_fd), tokens);
 }
 
 
@@ -319,4 +325,28 @@ Client& Server::getClientClass(int fd){
 		}
 	}
 	return *it;
+}
+
+
+const Cmd& vectorToStruct(std::vector<std::string> tokens, int fd){
+	Cmd *newStruct = new Cmd;
+
+	int vectPos = 0;
+	bool chanSwitch = false;
+	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it){
+
+		if(it->at(0) == ':' && vectPos == 0)
+			newStruct->prefix = it->data();
+		if(it->length() > 0 && vectPos == 1)
+			newStruct->cmd = it->data();
+		if(it->at(0) == ':' && vectPos > 0)
+			newStruct->arg.push_back(it->data());
+		if(it->at(0) == '#' && vectPos > 0){
+			newStruct->arg.push_back(it->data());
+			chanSwitch = true;
+		}
+		if(it->at(0) && vectPos > 0 && chanSwitch == true)
+			newStruct->password.push_back(it->data());
+		vectPos++;
+	}
 }
