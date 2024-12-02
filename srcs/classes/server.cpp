@@ -324,3 +324,27 @@ Client& Server::getClientClass(int fd){
 	}
 	return *it;
 }
+
+Cmd& vectorToStruct(std::vector<std::string> tokens, int fd){
+	Cmd *newStruc = new Cmd;
+
+	int vectPos = 0;
+	bool chanSwitch = false;
+	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it){
+
+		if(it->at(0) == ':' && vectPos == 0)
+			newStruct->prefix = it->data();
+		if(it->length() > 0 && vectPos == 1)
+			newStruct->cmd = it->data();
+		if(it->at(0) == ':' && vectPos > 0)
+			newStruct->arg.push_back(it->data());
+		if(it->at(0) == '#' && vectPos > 0){
+			newStruct->arg.push_back(it->data());
+			chanSwitch = true;
+		} 
+		if(it->at(0) && vectPos > 0 && chanSwitch == true)
+			newStruct->password.push_back(it->data());
+		vectPos++;
+	}
+	return &newStruct;
+}
