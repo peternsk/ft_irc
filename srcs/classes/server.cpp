@@ -285,7 +285,7 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 	// 		CMD::invite, CMD::topic, CMD::mode, CMD::nick, CMD::msg};
 
 
-	void ((Server::*cmdFuncArr[]))(const Cmd &cmd) = {CMD::join, CMD::kick,
+	void (*cmdFuncArr[])(const Cmd &cmd) = {CMD::join, CMD::kick,
 			CMD::topic, CMD::mode, CMD::nick, CMD::msg};
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
@@ -325,8 +325,8 @@ Client& Server::getClientClass(int fd){
 	return *it;
 }
 
-Cmd& vectorToStruct(std::vector<std::string> tokens, int fd){
-	Cmd *newStruc = new Cmd;
+Cmd* vectorToStruct(std::vector<std::string> tokens, int fd){
+	Cmd *newStruct = new Cmd;
 
 	int vectPos = 0;
 	bool chanSwitch = false;
@@ -346,5 +346,5 @@ Cmd& vectorToStruct(std::vector<std::string> tokens, int fd){
 			newStruct->password.push_back(it->data());
 		vectPos++;
 	}
-	return &newStruct;
+	return newStruct;
 }
