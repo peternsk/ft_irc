@@ -281,16 +281,13 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 
 	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
 
-	// void ((Server::*cmdFuncArr[]))(const Cmd &cmd) = {CMD::join, CMD::kick,
-	// 		CMD::invite, CMD::topic, CMD::mode, CMD::nick, CMD::msg};
-
 
 	void ((Server::*cmdFuncArr[]))(const Cmd &cmd) = {CMD::join, CMD::kick,
 			CMD::topic, CMD::mode, CMD::nick, CMD::msg};
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
-	// if(cmdPos >= 0)
-    	// (this->*cmdFuncArr[cmdPos])(getClientClass(m_fd), tokens);
+	if(cmdPos >= 0)
+    	(this->*cmdFuncArr[cmdPos])();
 }
 
 
@@ -326,7 +323,7 @@ Client& Server::getClientClass(int fd){
 }
 
 Cmd& vectorToStruct(std::vector<std::string> tokens, int fd){
-	Cmd *newStruc = new Cmd;
+	Cmd *newStruct = new Cmd;
 
 	int vectPos = 0;
 	bool chanSwitch = false;
