@@ -336,6 +336,8 @@ Cmd Server::vectorToStruct(std::vector<std::string> tokens, int fd){
 			newStruct.prefix = it->data();
 		if(it->length() > 0 && vectPos == 1)
 			newStruct.cmd = it->data();
+		if( std::strcmp(it->data(), "mode") && vectPos == 0)
+			newStruct.mode = it->data();
 		if(it->at(0) == ':' && vectPos > 0)
 			newStruct.arg.push_back(it->data());
 		if(it->at(0) == '#' && vectPos > 0){
