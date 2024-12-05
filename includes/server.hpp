@@ -1,4 +1,5 @@
 #include "ft_irc.hpp"
+#include "struct.hpp"
 
 
 
@@ -56,18 +57,6 @@ class Server {
 		int foundCmd(std::list <std::string>&cmdArr, const std::string& cmd);
 		void printVector(std::vector<std::string> tokens);
 
-		/****************/
-		/*   CMD FUNC   */
-		/****************/
-
-		// void JOIN(Client &m_client ,std::vector<std::string> tokens);
-		// void USER(Client &m_client ,std::vector<std::string> tokens);
-		// void KICK(Client &m_client ,std::vector<std::string> tokens);
-		// void INVITE(Client &m_client ,std::vector<std::string> tokens);
-		// void TOPIC(Client &m_client ,std::vector<std::string> tokens);
-		// void MODE(Client &m_client ,std::vector<std::string> tokens);
-		// void NICK(Client &m_client ,std::vector<std::string> tokens);
-		// void PRIVMSG(Client &m_client ,std::vector<std::string> tokens);
 
 		/****************/
 		/* handle class */
@@ -75,6 +64,7 @@ class Server {
 
 		Client& getClientClass(int fd);
 		void addClientToList(int fd);
+		Cmd* vectorToStruct(std::vector<std::string> tokens, int fd);
 
     private:
         int serPort;

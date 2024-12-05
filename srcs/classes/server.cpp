@@ -49,7 +49,7 @@ void Server::serSocket()
     std::cout << YEL << "SERVER PASS: " << this->serPassword << WHI << std::endl;
 	add.sin_port = htons(this->serPort);
 	add.sin_addr.s_addr = INADDR_ANY;
-
+  
 	this->serSocFd = socket(AF_INET, SOCK_STREAM, 0);
 	if(this->serSocFd == -1)
 		throw(std::runtime_error("faild to create socket"));
@@ -137,6 +137,7 @@ void Server::clearClients(int fd){
 
 void Server::acceptNewClient()
 {
+
 	std::cout << "test 2...\n";
 	Client cli;
 	struct sockaddr_in cliadd;
@@ -282,12 +283,12 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
 
 
-	void ((Server::*cmdFuncArr[]))(const Cmd &cmd) = {CMD::join, CMD::kick,
+	void (*cmdFuncArr[])(const Cmd &cmd) = {CMD::join, CMD::kick,
 			CMD::topic, CMD::mode, CMD::nick, CMD::msg};
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
 	if(cmdPos >= 0)
-    	(this->*cmdFuncArr[cmdPos])();
+    	(cmdFuncArr[cmdPos])(vectorToStruct(tokens, m_fd));
 }
 
 
@@ -322,7 +323,7 @@ Client& Server::getClientClass(int fd){
 	return *it;
 }
 
-Cmd& vectorToStruct(std::vector<std::string> tokens, int fd){
+Cmd* Server::vectorToStruct(std::vector<std::string> tokens, int fd){
 	Cmd *newStruct = new Cmd;
 
 	int vectPos = 0;
@@ -343,5 +344,6 @@ Cmd& vectorToStruct(std::vector<std::string> tokens, int fd){
 			newStruct->password.push_back(it->data());
 		vectPos++;
 	}
-	return &newStruct;
+	newStruct->client = Server::getClientClass(fd);
+	return newStruct;
 }
