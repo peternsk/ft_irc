@@ -13,7 +13,7 @@ CLASSES     = channel client operator server
 UTILES        = main cmdUtils cmd channelManagerUtils channelManager
 
 SRCS        = $(addsuffix .cpp, $(addprefix $(SRCS_DIR)/classes/, $(CLASSES))) \
-              $(addsuffix .cpp, $(addprefix $(SRCS_DIR)/main/, $(MAIN)))
+              $(addsuffix .cpp, $(addprefix $(SRCS_DIR)/utiles/, $(UTILES)))
 
 OBJS        = $(SRCS:$(SRCS_DIR)/%.cpp=$(OBJS_DIR)/%.o)
 

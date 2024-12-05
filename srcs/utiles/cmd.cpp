@@ -41,7 +41,7 @@ namespace CMD {
 			cmd.chan->topic(cmd.client, cmd.arg[0]);
 		else
 		{
-			
+
 			pp("this is the topic", cmd.chan->topic(cmd.client));
 			// send to client the topic
 		}
@@ -120,26 +120,4 @@ namespace CMD {
 		cmd.chan->sendMSGClient(cmd.arg[0]);
 	}
 
-}
-
-void execCmd(const Cmd &cmd) {
-	if (!cmd.client)
-	{
-		p("euhh problem ave client")
-		return ;
-	}
-	static void (*cmdlist[])(const Cmd &) = {
-    	CMD::join,
-    	CMD::topic,
-    	CMD::kick,
-    	CMD::nick,
-    	CMD::mode,
-    	// CMD::list /// wesh ?
-    	// CMD::invite // comment faire
-    	CMD::msg,
-    	CMD::part,
-    	CMD::quit,
-    	CMD::cmsg
-	};
-	cmdlist[cmd.cmd](cmd);
 }

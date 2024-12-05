@@ -64,7 +64,7 @@ class Server {
 
 		Client& getClientClass(int fd);
 		void addClientToList(int fd);
-		Cmd* vectorToStruct(std::vector<std::string> tokens, int fd);
+		Cmd vectorToStruct(std::vector<std::string> tokens, int fd);
 
     private:
         int serPort;

@@ -49,7 +49,7 @@ void Server::serSocket()
     std::cout << YEL << "SERVER PASS: " << this->serPassword << WHI << std::endl;
 	add.sin_port = htons(this->serPort);
 	add.sin_addr.s_addr = INADDR_ANY;
-  
+
 	this->serSocFd = socket(AF_INET, SOCK_STREAM, 0);
 	if(this->serSocFd == -1)
 		throw(std::runtime_error("faild to create socket"));
@@ -287,8 +287,10 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 			CMD::topic, CMD::mode, CMD::nick, CMD::msg};
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
-	if(cmdPos >= 0)
-    	(cmdFuncArr[cmdPos])(vectorToStruct(tokens, m_fd));
+	if(cmdPos >= 0){
+		Cmd cmd = vectorToStruct(tokens, m_fd);
+    	(cmdFuncArr[cmdPos])(cmd);
+	}
 }
 
 
@@ -323,27 +325,27 @@ Client& Server::getClientClass(int fd){
 	return *it;
 }
 
-Cmd* Server::vectorToStruct(std::vector<std::string> tokens, int fd){
-	Cmd *newStruct = new Cmd;
+Cmd Server::vectorToStruct(std::vector<std::string> tokens, int fd){
+	Cmd newStruct;
 
 	int vectPos = 0;
 	bool chanSwitch = false;
 	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it){
 
 		if(it->at(0) == ':' && vectPos == 0)
-			newStruct->prefix = it->data();
+			newStruct.prefix = it->data();
 		if(it->length() > 0 && vectPos == 1)
-			newStruct->cmd = it->data();
+			newStruct.cmd = it->data();
 		if(it->at(0) == ':' && vectPos > 0)
-			newStruct->arg.push_back(it->data());
+			newStruct.arg.push_back(it->data());
 		if(it->at(0) == '#' && vectPos > 0){
-			newStruct->arg.push_back(it->data());
+			newStruct.arg.push_back(it->data());
 			chanSwitch = true;
-		} 
+		}
 		if(it->at(0) && vectPos > 0 && chanSwitch == true)
-			newStruct->password.push_back(it->data());
+			newStruct.password.push_back(it->data());
 		vectPos++;
 	}
-	newStruct->client = Server::getClientClass(fd);
+	newStruct.client = &Server::getClientClass(fd);
 	return newStruct;
 }
