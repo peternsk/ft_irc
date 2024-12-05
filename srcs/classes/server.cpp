@@ -181,63 +181,6 @@ void Server::receiveNewData(int m_fd)
 	}
 }
 
-/********************/
-/*    CMD DEF TEST   */
-/********************/
-
-// void Server::JOIN(Client &m_client ,std::vector<std::string> tokens){
-// 	(void)m_client;
-// 	std::cout << BLU << "unsing JOIN command" << WHI << std::endl;
-// 	Server::printVector(tokens);
-// }
-
-// void Server::USER(Client &m_client ,std::vector<std::string> tokens){
-// 	(void)m_client;
-// 	std::cout << BLU << "unsing USER command" << WHI << std::endl;
-// 	Server::printVector(tokens);
-// }
-
-// void Server::KICK(Client &m_client ,std::vector<std::string> tokens){
-// 	(void)m_client;
-// 	std::cout << BLU << "unsing KICK command" << WHI << std::endl;
-// 	Server::printVector(tokens);
-// }
-
-// void Server::INVITE(Client &m_client ,std::vector<std::string> tokens){
-// 	(void)m_client;
-// 	std::cout << BLU << "unsing INVITE command" << WHI << std::endl;
-// 	Server::printVector(tokens);
-// }
-
-// void Server::TOPIC(Client &m_client ,std::vector<std::string> tokens){
-// 	(void)m_client;
-// 	std::cout << BLU << "unsing TOPIC command" << WHI << std::endl;
-// 	Server::printVector(tokens);
-// }
-
-// void Server::MODE(Client &m_client ,std::vector<std::string> tokens){
-// 	(void)m_client;
-// 	std::cout << BLU << "unsing MODE command" << WHI << std::endl;
-// 	Server::printVector(tokens);
-// }
-
-// void Server::NICK(Client &m_client ,std::vector<std::string> tokens){
-// 	(void)m_client;
-// 	std::cout << BLU << "unsing NICK command" << WHI << std::endl;
-// 	Server::printVector(tokens);
-// }
-
-// void Server::PRIVMSG(Client &m_client ,std::vector<std::string> tokens){
-// 	(void)m_client;
-// 	std::cout << BLU << "unsing PRIVMSG command" << WHI << std::endl;
-// 	Server::printVector(tokens);
-// }
-
-
-/********************/
-/*    CMD PARSER    */
-/********************/
-
 std::vector<std::string> Server::setCmdList(std::string clientRequest){
 
 	std::vector<std::string> tokens;
@@ -325,6 +268,17 @@ Client& Server::getClientClass(int fd){
 	return *it;
 }
 
+bool Server::isMode(const std::string supMode){
+	std::string modeList[] = {"-O", "+O", "-T", "+T", "-K", "+K", "-L", "+L", "-I", "+I"};
+	std::vector<std::string> cmdMode(modeList, modeList + 10);
+	for (std::vector<std::string>::iterator it = cmdMode.begin(); it != cmdMode.end(); ++it){
+		if(std::strcmp(it->data(), supMode.c_str()) == true)
+			return (true);
+	}
+	return false;
+}
+
+
 Cmd Server::vectorToStruct(std::vector<std::string> tokens, int fd){
 	Cmd newStruct;
 
@@ -336,8 +290,10 @@ Cmd Server::vectorToStruct(std::vector<std::string> tokens, int fd){
 			newStruct.prefix = it->data();
 		if(it->length() > 0 && vectPos == 1)
 			newStruct.cmd = it->data();
-		if( std::strcmp(it->data(), "mode") && vectPos == 0)
+
+		if(Server::isMode(it->data()) && vectPos == 3)
 			newStruct.mode = it->data();
+
 		if(it->at(0) == ':' && vectPos > 0)
 			newStruct.arg.push_back(it->data());
 		if(it->at(0) == '#' && vectPos > 0){
