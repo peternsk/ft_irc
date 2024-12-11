@@ -56,6 +56,8 @@ class Server {
 		void cmdHandler(int fd, std::string clientRequest);
 		int foundCmd(std::list <std::string>&cmdArr, const std::string& cmd);
 		void printVector(std::vector<std::string> tokens);
+		Cmd vectorToStruct(std::vector<std::string> tokens, int fd);
+		bool isMode(std::string token);
 
 
 		/****************/
@@ -64,7 +66,7 @@ class Server {
 
 		Client& getClientClass(int fd);
 		void addClientToList(int fd);
-		Cmd vectorToStruct(std::vector<std::string> tokens, int fd);
+
 
     private:
         int serPort;

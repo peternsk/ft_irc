@@ -1,17 +1,6 @@
 #include "cmd.hpp"
 namespace CMD {
-	// si la commande est join
-// JOIN #channel
-// JOIN #channel1,#channel2
-// JOIN #channel password
-// JOIN #channel1,#channel2,#channel3 password1,password2,password3
 
-// JOIN {
-// the client
-// the command
-// vector arg1 channelname
-// vector passwords: password
-// }
 
 
 	void join(const Cmd &cmd) {
@@ -57,39 +46,27 @@ namespace CMD {
 	}
 
 	void mode(const Cmd &cmd) {
-		switch (cmd.mode) {
-			case _I:
+			if(cmd.mode == "-I")
 				cmd.chan->setInvitationMode(cmd.client);
-				break;
-			case I:
+			if(cmd.mode == "+I")
 				cmd.chan->setInvitationMode(cmd.client, true);
-				break;
-			case _T:
+			if(cmd.mode == "-T")
 				cmd.chan->setChopChangeTopic(cmd.client);
-				break;
-			case T:
+			if(cmd.mode == "+T")
 				cmd.chan->setChopChangeTopic(cmd.client, true);
-				break;
-			case _K:
+			if(cmd.mode == "-K")
 				cmd.chan->setWpMode(cmd.client);
-				break;
-			case K:
+			if(cmd.mode == "+K")
 				cmd.chan->setWpMode(cmd.client, cmd.arg[0]);
-				break;
-			case O:
+			if(cmd.mode == "+O")
 				cmd.chan->setChop(cmd.client, cmd.arg[0], true);
-				break;
-			case _O:
+			if(cmd.mode == "-O")
 				cmd.chan->setChop(cmd.client, cmd.arg[0]);
-				break;
-			case L:
+			if(cmd.mode == "+L")
 				cmd.chan->setLimitMode(cmd.client, std::stoi(cmd.arg[0]));
-				break;
-			case _L:
+			if(cmd.mode == "-L")
 				cmd.chan->setLimitMode(cmd.client);
-				break;
 		}
-	}
 
 	// void list(const Cmd &cmd) { // faut til le faire ??
 
@@ -103,16 +80,18 @@ namespace CMD {
 			std::invalid_argument(Error::ERR_NOSUCHNICK(cmd.arg[0]));
 		// envoyer un message *********************************
 	}
+
 	void part(const Cmd &cmd) {
 		CMDH::removeClientChan(cmd.client, cmd.chan);
 	}
+
 	void quit(const Cmd &cmd) {
 		CMDH::clientDisconnect(cmd.client);
 	}
+
 	void cmsg(const Cmd &cmd) {
 		if (!cmd.chan->hasClient(cmd.client))
 			std::invalid_argument(Error::ERR_NOTONCHANNEL(cmd.chan->getName())); 
 		cmd.chan->sendMSGClient(cmd.arg[0]);
 	}
-
-}
+};
