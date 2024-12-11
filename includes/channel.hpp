@@ -31,7 +31,7 @@ class Channel {
 // **************************************************************//
 // CLIENTS
 // **************************************************************//
-	void sendMSGClient(const std::string &msg);
+	void sendMSGClient(const std::string &msg, Client * sender);
 	void addClient(Client * client);
 
 // **************************************************************//

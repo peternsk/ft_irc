@@ -14,40 +14,44 @@ class Error
         Error();
         ~Error();
         // Error( /* class server */ server *obj );
-        // std::string ERR_NONICKNAMEGIVEN  () ""; 
-        std::string ERR_ERRONEUSNICKNAME  () const; 
-        std::string ERR_NICKNAMEINUSE   () ; 
-        std::string ERR_NICKCOLLISION   (); 
-        std::string ERR_UNAVAILRESOURCE   (); 
-        std::string ERR_RESTRICTED   (); 
-        std::string ERR_NEEDMOREPARAMS   (); 
-        std::string ERR_BANNEDFROMCHAN   (); 
-        std::string ERR_INVITEONLYCHAN    (); 
-        std::string ERR_BADCHANNELKEY    (); 
-        std::string ERR_CHANNELISFULL    (); 
-        std::string ERR_BADCHANMASK    (); 
-        std::string ERR_NOSUCHCHANNEL     (); 
-        std::string ERR_TOOMANYCHANNELS     (); 
-        std::string ERR_TOOMANYTARGETS    (); 
-        std::string RPL_TOPIC    (); 
-        std::string ERR_CHANOPRIVSNEEDED    (); 
-        std::string ERR_USERNOTINCHANNEL    (); 
-        std::string ERR_NOTONCHANNEL   (); 
-        std::string ERR_NOSUCHNICK   (); 
-        std::string ERR_USERONCHANNEL   (); 
-        std::string RPL_INVITING     (); 
-        std::string RPL_AWAY    (); 
-        std::string ERR_NOCHANMODES    (); 
-        std::string ERR_UNKNOWNMODE (); 
-        std::string RPL_CHANNELMODEIS (); 
-        std::string RPL_BANLIST(); 
-        std::string RPL_ENDOFBANLIST(); 
-        std::string RPL_EXCEPTLIST  (); 
-        std::string RPL_ENDOFEXCEPTLIST  (); 
-        std::string RPL_INVITELIST  (); 
-        std::string RPL_ENDOFINVITELIST (); 
-        std::string RPL_UNIQOPIS (); 
-        std::string ERR_KEYSET(); 
+        // std::string ERR_NONICKNAMEGIVEN  () "";
+
+        static std::string Error::ERR_TOPICNOTSET   (std::string chan);
+
+        // le nickname quand tu essaye de le changer ou register nest pas correct
+        static std::string ERR_ERRONEUSNICKNAME  (std::string name); 
+        static std::string ERR_NICKNAMEINUSE   (std::string name) ; 
+        // static std::string ERR_NICKCOLLISION   (std::string name); no need
+        // static std::string ERR_UNAVAILRESOURCE   ();  // not too sure
+        static std::string ERR_RESTRICTED   ();  
+        static std::string ERR_NEEDMOREPARAMS   (std::string cmd); 
+        static std::string ERR_BANNEDFROMCHAN   (); 
+        static std::string ERR_INVITEONLYCHAN    (std::string chan); 
+        static std::string ERR_BADCHANNELKEY    (std::string chan); 
+        static std::string ERR_CHANNELISFULL    (); 
+        static std::string ERR_BADCHANMASK    (); 
+        static std::string ERR_NOSUCHCHANNEL     (); 
+        static std::string ERR_TOOMANYCHANNELS     (); 
+        static std::string ERR_TOOMANYTARGETS    (); 
+        static std::string RPL_TOPIC    (std::string chan, std::string topic); 
+        static std::string ERR_CHANOPRIVSNEEDED    (std::string name); 
+        static std::string ERR_USERNOTINCHANNEL    (std::string name, std::string chan); 
+        static std::string ERR_NOTONCHANNEL   (std::string chan); 
+        static std::string ERR_NOSUCHNICK   (std::string name); 
+        static std::string ERR_USERONCHANNEL   (); 
+        static std::string RPL_INVITING     (); 
+        static std::string RPL_AWAY    (); 
+        static std::string ERR_NOCHANMODES    (); 
+        static std::string ERR_UNKNOWNMODE (); 
+        static std::string RPL_CHANNELMODEIS (); 
+        static std::string RPL_BANLIST(); 
+        static std::string RPL_ENDOFBANLIST(); 
+        static std::string RPL_EXCEPTLIST  (); 
+        static std::string RPL_ENDOFEXCEPTLIST  (); 
+        static std::string RPL_INVITELIST  (); 
+        static std::string RPL_ENDOFINVITELIST (); 
+        static std::string RPL_UNIQOPIS (); 
+        static std::string ERR_KEYSET(); 
 };
 
 #endif

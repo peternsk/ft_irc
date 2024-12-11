@@ -284,12 +284,17 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 
 
 	void (*cmdFuncArr[])(const Cmd &cmd) = {CMD::join, CMD::kick,
-			CMD::topic, CMD::mode, CMD::nick, CMD::msg};
+			CMD::topic, CMD::mode, CMD::nick, CMD::msg}; // y va falloir add cmsg message pour channel
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
 	if(cmdPos >= 0){
 		Cmd cmd = vectorToStruct(tokens, m_fd);
-    	(cmdFuncArr[cmdPos])(cmd);
+		try {
+    		(cmdFuncArr[cmdPos])(cmd);
+		}
+		catch  (const std::exception& e) {
+			// send e to client ***********
+		}
 	}
 }
 

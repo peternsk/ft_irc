@@ -56,6 +56,7 @@
 #include "struct.hpp"
 #include "cmd.hpp"
 
+#include "Error.hpp"
 
 #define p(x) std::cout << x << std::endl;
 #define pp(x, y) std::cout << x << ", " << y<< std::endl;

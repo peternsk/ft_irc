@@ -13,38 +13,29 @@ namespace CMD {
 // vector passwords: password
 // }
 
+
 	void join(const Cmd &cmd) {
 		int nbWp = 0;
-		// p("sdfdsffsd");
-		for (int i = 0; i < (int)cmd.arg.size(); ++i)
+		// normaly no error if you try to join even if you are already there >> simply ignored cmd
+		for (int i = 0; i < (int)cmd.arg.size(); ++i) // I did this loop if joining multiple channels at the sametime
 		{
-			try {
 				// make sur that he is not already in the channel
-				Channel *chan = CMDH::findChan(cmd.arg[i]);
-				if (!CMDH::joinCheckMode(chan, cmd, nbWp))
-					continue;
-				p("joins channel");
-				cmd.client->join(chan);
-			}
-			catch(std::exception & e) {
-				p("channel doesnt exist so create it");
 				// create the channels because it doesnt exist
-				CMDH::channelsArr(cmd.client->join(cmd.arg[i]));
-			}
+				Channel *chan = CMDH::findChan(cmd.arg[i]);
+				if (!chan)
+					CMDH::channelsArr(cmd.client->join(cmd.arg[i]));
+				else {
+					if (!CMDH::joinCheckMode(chan, cmd, nbWp))
+					continue;
+					cmd.client->join(chan);
+				}				
 		}
 	}
 
 	void topic(const Cmd &cmd) {
 		if (cmd.arg.size() > 1)
-			throw std::exception();
-		if (cmd.arg.size() == 1)
-			cmd.chan->topic(cmd.client, cmd.arg[0]);
-		else
-		{
-
-			pp("this is the topic", cmd.chan->topic(cmd.client));
-			// send to client the topic
-		}
+			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("TOPIC"));
+		cmd.chan->topic(cmd.client, cmd.arg[0]);
 	}
 
 	void kick(const Cmd &cmd) {
@@ -53,10 +44,12 @@ namespace CMD {
 			// get client to kick
 			Client *toKick = CMDH::findClient(cmd.arg[0]);
 			if (!toKick)
-				return // exeption client to kick dont even exist
+				throw invalid_argument(Error::ERR_NOSUCHNICK(cmd.arg[0]));
 			cmd.client->kick(toKick, cmd.chan);
 		}
-		// else channels doesnt have the client
+		 // does not have the one doing the cmd
+		else
+			throw std::invalid_argument(Error::ERR_NOTONCHANNEL(cmd.chan->getName()));
 	}
 
 	void nick(const Cmd &cmd) {
@@ -107,8 +100,8 @@ namespace CMD {
 	void msg(const Cmd &cmd) {
 		Client * toSend = CMDH::findClient(cmd.arg[0]);
 		if (!toSend)
-			return ; // error client does not exist
-		// envoyer un message
+			std::invalid_argument(Error::ERR_NOSUCHNICK(cmd.arg[0]));
+		// envoyer un message *********************************
 	}
 	void part(const Cmd &cmd) {
 		CMDH::removeClientChan(cmd.client, cmd.chan);
@@ -117,6 +110,8 @@ namespace CMD {
 		CMDH::clientDisconnect(cmd.client);
 	}
 	void cmsg(const Cmd &cmd) {
+		if (!cmd.chan->hasClient(cmd.client))
+			std::invalid_argument(Error::ERR_NOTONCHANNEL(cmd.chan->getName())); 
 		cmd.chan->sendMSGClient(cmd.arg[0]);
 	}
 

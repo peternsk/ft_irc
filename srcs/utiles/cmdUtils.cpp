@@ -22,6 +22,8 @@ namespace CMDH {
 
 	void removeClientChan(Client * client, Channel * chan) {
 
+		if (!chan->hasClient(client))
+			return ; // i dont know why but its just suppose to be ignore not to return an error
 		client->removeChan(chan);
 		if (chan->getNbPeople() == 1)
 		{
@@ -40,7 +42,7 @@ namespace CMDH {
 			if ((*it)->getName() == name)
 				return *it;
 		}
-		throw std::exception();
+		return NULL;
 	} 
 
 	void clientDisconnect(Client * client) {
@@ -72,25 +74,21 @@ namespace CMDH {
 	}
 
 	bool joinCheckMode(Channel * chan, const Cmd & cmd, int & nbWp) {
-		if (chan->getIsInviteOnly()) {
-			//send error
-			return false;
-		}
+		if (chan->getIsInviteOnly())
+			throw std::invalid_argument(ERR_INVITEONLYCHAN(chan->getName()));
 		if (chan->getNeedWp())
 		{
 			nbWp++;
 				p("needs pw");
 			if ((int)cmd.password.size() < nbWp)
 			{
-				p("no no password");
-				// send error
-				return false;
+				// no password
+				throw std::invalid_argument(ERR_BADCHANNELKEY(chan->getName()))
 			}
 			if (!chan->tryWp(cmd.password[nbWp - 1]))
 			{
-				p("wrong pw");
-				// send error
-				return false;
+				// wrong pw
+				throw std::invalid_argument(ERR_BADCHANNELKEY(chan->getName()))
 			}
 		}
 		return true;

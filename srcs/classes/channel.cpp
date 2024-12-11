@@ -46,16 +46,17 @@
 	//****************************************************************//
 
 	// add a client that will change it if its an operator than can change the topic even if the flag is up
-	std::string Channel::topic(Client *asking, std::string newTopic) {
+	Channel::topic(Client *asking, std::string newTopic) {
 		if (_isChopTopic && !asking->getChop(this))
-			return ""; // THROW EXEPCTIONS
+			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 		if (!newTopic.empty())
 			_topic = newTopic;
 
 		// RETURN PROPER EXEPTION
 		if (_topic.empty())
-			throw std::exception();
-		return _topic;
+			throw std::runtime_error(Error::ERR_TOPICNOTSET(_name));;
+		// return the topics;
+		throw std::runtime_error(Error::RPL_TOPIC(_name, newTopic));
 	}
 
 	// void Channel::join() {
@@ -124,9 +125,12 @@
 		}
 	}
 
-	void Channel::sendMSGClient(const std::string &msg) {
+	void Channel::sendMSGClient(const std::string &msg, Client * sender) {
 		(void)msg;
+		(void)sender;
+
 		for (std::map<std::string, Client *>::iterator it; it != clients.end(); ++it) {
+			// if (it->getName() != Client->getName())
 			// // fd a changer
 			// if (send(it->fd, , 0) == 1)
 			// 	throw std::exception();

@@ -1,10 +1,29 @@
 #include "client.hpp"
 
+
 	Client::Client() {}
 	Client::~Client() {
 	}
 
-	Client::Client(std::string name) : _name(name) {}
+	bool isAlphaNumeric(const std::string& str) {
+    for (size_t i = 0; i < str.length(); ++i) {
+        if (!isdigit(str[i]) && !isalpha(str[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+	Client::Client(std::string name) {
+
+		// mettre ca ou tu creer le client
+		if (isAlphaNumeric(name))
+			throw std::invalid_argument(Error::ERR_ERRONEUSNICKNAME(name));
+		
+		if (!CMDH::findClient(name))
+			throw std::invalid_argument(Error::ERR_NICKNAMEINUSE(name));
+		_name = name;
+	}
 
 	void Client::setChop(bool SetChop, Channel * chan) {
 		if (_Channels.find(chan) != _Channels.end())
@@ -20,6 +39,8 @@
 	}
 
 	void Client::setName(std::string name) {
+		if (CMDH::findClient(name))
+			throw std::invalid_argument(Error::ERR_NICKNAMEINUSE(name));
 		_name = name;
 	}
 
@@ -47,8 +68,13 @@
 				client->removeChan(chan);
 				chan->kick(client);
 			}
+			else if (!_Channels[chan])
+				throw std::runtime_error(Error::ERR_CHANOPRIVSNEEDED(chan->getName()));
+			else
+				throw std::runtime_error(ERR_USERNOTINCHANNEL(client->getName(), chan->getName()));
 			// else return dont have permition ou que le client nest pas dans le channel
 		}
+		throw std::runtime_error(ERR_NOTONCHANNEL(chan->getName()));
 		// else retourne client is not in the channel
 	}
 
