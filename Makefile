@@ -9,7 +9,7 @@ RM          = rm -rf
 #--- GROUP ---#
 SRCS_DIR    = srcs
 OBJS_DIR    = objs
-CLASSES     = channel client operator server
+CLASSES     = channel client operator server Error
 UTILES        = main cmdUtils cmd channelManagerUtils channelManager
 
 SRCS        = $(addsuffix .cpp, $(addprefix $(SRCS_DIR)/classes/, $(CLASSES))) \

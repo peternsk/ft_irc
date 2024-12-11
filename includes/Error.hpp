@@ -16,7 +16,7 @@ class Error
         // Error( /* class server */ server *obj );
         // std::string ERR_NONICKNAMEGIVEN  () "";
 
-        static std::string Error::ERR_TOPICNOTSET   (std::string chan);
+        static std::string ERR_TOPICNOTSET   (std::string chan);
 
         // le nickname quand tu essaye de le changer ou register nest pas correct
         static std::string ERR_ERRONEUSNICKNAME  (std::string name); 

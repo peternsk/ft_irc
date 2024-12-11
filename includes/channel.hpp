@@ -40,7 +40,7 @@ class Channel {
 	// void join();
 	void kick(Client * client);
 	// invite
-	std::string topic(Client *asking, std::string newTopic = "");
+	void topic(Client *asking, std::string newTopic = "");
 
 	// make a function to write to everyone the message sent
 

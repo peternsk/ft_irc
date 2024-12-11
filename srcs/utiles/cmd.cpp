@@ -1,8 +1,6 @@
 #include "cmd.hpp"
 namespace CMD {
 
-
-
 	void join(const Cmd &cmd) {
 		int nbWp = 0;
 		// normaly no error if you try to join even if you are already there >> simply ignored cmd
@@ -33,7 +31,7 @@ namespace CMD {
 			// get client to kick
 			Client *toKick = CMDH::findClient(cmd.arg[0]);
 			if (!toKick)
-				throw invalid_argument(Error::ERR_NOSUCHNICK(cmd.arg[0]));
+				throw std::invalid_argument(Error::ERR_NOSUCHNICK(cmd.arg[0]));
 			cmd.client->kick(toKick, cmd.chan);
 		}
 		 // does not have the one doing the cmd
@@ -62,8 +60,14 @@ namespace CMD {
 				cmd.chan->setChop(cmd.client, cmd.arg[0], true);
 			if(cmd.mode == "-O")
 				cmd.chan->setChop(cmd.client, cmd.arg[0]);
-			if(cmd.mode == "+L")
-				cmd.chan->setLimitMode(cmd.client, std::stoi(cmd.arg[0]));
+			if(cmd.mode == "+L") {
+				// linux i only have access to stoi in c++11
+				// cmd.chan->setLimitMode(cmd.client, std::stoi(cmd.arg[0]));
+				int long nbr;
+				std::stringstream(cmd.arg[0]) >> nbr;
+				cmd.chan->setLimitMode(cmd.client, nbr);
+
+			}
 			if(cmd.mode == "-L")
 				cmd.chan->setLimitMode(cmd.client);
 		}
@@ -80,18 +84,15 @@ namespace CMD {
 			std::invalid_argument(Error::ERR_NOSUCHNICK(cmd.arg[0]));
 		// envoyer un message *********************************
 	}
-
 	void part(const Cmd &cmd) {
 		CMDH::removeClientChan(cmd.client, cmd.chan);
 	}
-
 	void quit(const Cmd &cmd) {
 		CMDH::clientDisconnect(cmd.client);
 	}
-
 	void cmsg(const Cmd &cmd) {
 		if (!cmd.chan->hasClient(cmd.client))
 			std::invalid_argument(Error::ERR_NOTONCHANNEL(cmd.chan->getName())); 
-		cmd.chan->sendMSGClient(cmd.arg[0]);
+		cmd.chan->sendMSGClient(cmd.arg[0], cmd.client);
 	}
-};
+}

@@ -75,7 +75,7 @@ namespace CMDH {
 
 	bool joinCheckMode(Channel * chan, const Cmd & cmd, int & nbWp) {
 		if (chan->getIsInviteOnly())
-			throw std::invalid_argument(ERR_INVITEONLYCHAN(chan->getName()));
+			throw std::invalid_argument(Error::ERR_INVITEONLYCHAN(chan->getName()));
 		if (chan->getNeedWp())
 		{
 			nbWp++;
@@ -83,12 +83,12 @@ namespace CMDH {
 			if ((int)cmd.password.size() < nbWp)
 			{
 				// no password
-				throw std::invalid_argument(ERR_BADCHANNELKEY(chan->getName()))
+				throw std::invalid_argument(Error::ERR_BADCHANNELKEY(chan->getName()));
 			}
 			if (!chan->tryWp(cmd.password[nbWp - 1]))
 			{
 				// wrong pw
-				throw std::invalid_argument(ERR_BADCHANNELKEY(chan->getName()))
+				throw std::invalid_argument(Error::ERR_BADCHANNELKEY(chan->getName()));
 			}
 		}
 		return true;

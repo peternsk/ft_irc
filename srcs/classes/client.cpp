@@ -71,10 +71,10 @@
 			else if (!_Channels[chan])
 				throw std::runtime_error(Error::ERR_CHANOPRIVSNEEDED(chan->getName()));
 			else
-				throw std::runtime_error(ERR_USERNOTINCHANNEL(client->getName(), chan->getName()));
+				throw std::runtime_error(Error::ERR_USERNOTINCHANNEL(client->getName(), chan->getName()));
 			// else return dont have permition ou que le client nest pas dans le channel
 		}
-		throw std::runtime_error(ERR_NOTONCHANNEL(chan->getName()));
+		throw std::runtime_error(Error::ERR_NOTONCHANNEL(chan->getName()));
 		// else retourne client is not in the channel
 	}
 

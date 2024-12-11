@@ -46,7 +46,7 @@
 	//****************************************************************//
 
 	// add a client that will change it if its an operator than can change the topic even if the flag is up
-	Channel::topic(Client *asking, std::string newTopic) {
+	void Channel::topic(Client *asking, std::string newTopic) {
 		if (_isChopTopic && !asking->getChop(this))
 			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 		if (!newTopic.empty())
