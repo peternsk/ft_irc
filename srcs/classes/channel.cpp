@@ -47,16 +47,20 @@
 
 	// add a client that will change it if its an operator than can change the topic even if the flag is up
 	void Channel::topic(Client *asking, std::string newTopic) {
-		if (_isChopTopic && !asking->getChop(this))
-			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
-		if (!newTopic.empty())
+		if (!hasClient(asking))
+			throw std::invalid_argument(Error::ERR_NOTONCHANNEL(asking->getName()));
+		if (!newTopic.empty()) {
+			if (_isChopTopic && !asking->getChop(this))
+				throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 			_topic = newTopic;
+			return ;
+		}
 
 		// RETURN PROPER EXEPTION
 		if (_topic.empty())
 			throw std::runtime_error(Error::ERR_TOPICNOTSET(_name));;
 		// return the topics;
-		throw std::runtime_error(Error::RPL_TOPIC(_name, newTopic));
+		throw std::runtime_error(Error::RPL_TOPIC(_name, _topic));
 	}
 
 	// void Channel::join() {
@@ -80,6 +84,7 @@
 	}
 
 	void Channel::setWpMode(Client *asking, std::string wp) {
+		std::cout << "lol" << std::endl;
 		if (!asking->getChop(this))
 			return ; //THROW ERROR
 		if (wp.empty())
@@ -149,6 +154,9 @@
 	}
 
 	bool Channel::tryWp(const std::string & trywp) {
+		std::cout << trywp << "dfgdfgdfgdfgdfggdf" << std::endl;
+		std::cout << _wp << "dfgdfgdfgdfgdfggdf" << std::endl;
+
 		if (_wp == trywp)
 			return true;
 		return false;

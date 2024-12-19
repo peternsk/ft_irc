@@ -83,10 +83,16 @@ namespace CMDH {
 			if ((int)cmd.password.size() < nbWp)
 			{
 				// no password
+				std::cout << "sdfgsdfg" << std::endl;
 				throw std::invalid_argument(Error::ERR_BADCHANNELKEY(chan->getName()));
 			}
 			if (!chan->tryWp(cmd.password[nbWp - 1]))
 			{
+				std::cout << "pw" << cmd.password[nbWp - 1] << std::endl;
+
+
+				std::cout << "nbwp" << nbWp << "sdfgsdfgsaaaaa" << std::endl;
+
 				// wrong pw
 				throw std::invalid_argument(Error::ERR_BADCHANNELKEY(chan->getName()));
 			}

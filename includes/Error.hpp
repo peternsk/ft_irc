@@ -30,7 +30,7 @@ class Error
         static std::string ERR_BADCHANNELKEY    (std::string chan); 
         static std::string ERR_CHANNELISFULL    (); 
         static std::string ERR_BADCHANMASK    (); 
-        static std::string ERR_NOSUCHCHANNEL     (); 
+        static std::string ERR_NOSUCHCHANNEL     (std::string chan); 
         static std::string ERR_TOOMANYCHANNELS     (); 
         static std::string ERR_TOOMANYTARGETS    (); 
         static std::string RPL_TOPIC    (std::string chan, std::string topic); 

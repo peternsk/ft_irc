@@ -17,5 +17,5 @@ int main(int ac, char**av)
 	    }
 	    std::cout << "The Server Closed!" << std::endl;
     }
-    std::cout << "missing argument..." << std::endl;
+    std::cout << ac << "missing argument..." << std::endl;
 }

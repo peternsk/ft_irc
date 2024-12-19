@@ -201,8 +201,7 @@ std::vector<std::string> Server::setCmdList(std::string clientRequest){
         tokens.push_back(token);
         clientRequest.erase(0, pos + 1);
     }
-    tokens.push_back(clientRequest);
-
+    // tokens.push_back(clientRequest); tout est enlever normalement fac c vide cause des probleme sinon
 	return tokens;
 }
 
@@ -219,28 +218,40 @@ int Server::foundCmd(std::list <std::string>&cmdArr, const std::string& cmd) {
 }
 
 void Server::cmdHandler(int m_fd, std::string clientRequest){
-	std::string cmdArr[] = {"join", "user", "kick", "invite", "topic", "mode", "nick", "msg"};
+	std::string cmdArr[] = {"JOIN", "KICK", "TOPIC", "MODE", "NICK",  "MSG", "USER", "INVITE"};
 
 	std::list<std::string> cmdList(cmdArr, cmdArr + 8);
 
 	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
 
+	//print tokens DEBUG
+	std::cout << std::endl;
+	int i = 0;
+	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++) {
+		std::cout << "TOKENS" << i << ":"<< *it << std::endl;
+		i++;
+	}
+	std::cout << "END"<< std::endl;
 
+
+	// pourquoi?
 	void (*cmdFuncArr[])(const Cmd &cmd) = {CMD::join, CMD::kick,
 			CMD::topic, CMD::mode, CMD::nick, CMD::msg}; // y va falloir add cmsg message pour channel
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
+
+
 	if(cmdPos >= 0){
 		Cmd cmd = vectorToStruct(tokens, m_fd);
 		try {
     		(cmdFuncArr[cmdPos])(cmd);
 		}
 		catch  (const std::exception& e) {
-			// send e to client ***********
+			// send the error to the clients
+			send(m_fd, e.what(), strlen(e.what()), 0);
 		}
 	}
 }
-
 
 void Server::printVector(std::vector<std::string> tokens){
 	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it){
@@ -248,7 +259,6 @@ void Server::printVector(std::vector<std::string> tokens){
     	std::cout << GRE << *it << WHI << std::endl;
 	}
 }
-
 
 /****************/
 /* Client class */
@@ -289,26 +299,38 @@ Cmd Server::vectorToStruct(std::vector<std::string> tokens, int fd){
 
 	int vectPos = 0;
 	bool chanSwitch = false;
+	// jai modifier de if a des else if pour si ya dequoi de pas correct
 	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it){
-
 		if(it->at(0) == ':' && vectPos == 0)
 			newStruct.prefix = it->data();
-		if(it->length() > 0 && vectPos == 1)
+		else if(it->length() > 0 && vectPos == 1)
 			newStruct.cmd = it->data();
+		
+		// else if(Server::isMode(it->data()) && vectPos == 3)
+		// 	newStruct.mode = it->data();
 
-		if(Server::isMode(it->data()) && vectPos == 3)
-			newStruct.mode = it->data();
+		else if(it->at(0) == ':' && vectPos > 0)
+			newStruct.arg.push_back(it->data());
 
-		if(it->at(0) == ':' && vectPos > 0)
+		else if (newStruct.cmd == "JOIN" && it->at(0) == '#' && vectPos > 0) {
 			newStruct.arg.push_back(it->data());
-		if(it->at(0) == '#' && vectPos > 0){
-			newStruct.arg.push_back(it->data());
-			chanSwitch = true;
+			chanSwitch = true; // chanswitch ca sert a quoi?
 		}
-		if(it->at(0) && vectPos > 0 && chanSwitch == true)
-			newStruct.password.push_back(it->data());
+		else if(it->at(0) == '#' && vectPos > 0){
+			newStruct.arg.push_back(it->data());
+		}
+		else if(it->at(0) && vectPos > 0 && chanSwitch == true)
+			newStruct.password.push_back(it->data()); 
+		else if (*it != "EMPTY") { // LE EMPTY CASSE LES COUILLES
+			newStruct.arg.push_back(it->data());
+		}
 		vectPos++;
 	}
 	newStruct.client = &Server::getClientClass(fd);
 	return newStruct;
 }
+
+
+// cestt supposer marcher comment la avec les chans 
+
+// probleme si on ne specifi pas # ca le prend meme pas comme arg

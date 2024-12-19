@@ -1,28 +1,71 @@
 #include "cmd.hpp"
 namespace CMD {
+// ONLY FOR HELP AND DEBUG
+	void printCMD(Cmd &cmd) {
+		std::cout << "prefixe: " << cmd.prefix << std::endl;
+		std::cout << "cmd: " << cmd.cmd << std::endl;
+
+		int i = 0;
+		for (std::vector<std::string>::iterator it = cmd.arg.begin(); it != cmd.arg.end(); it++) {
+			std::cout << "arg " << i << ":"<< *it << std::endl;
+			i++;
+		}
+		i = 0;
+		for (std::vector<std::string>::iterator it = cmd.password.begin(); it != cmd.password.end(); it++) {
+			std::cout << "PASSWORD " << i << ":"<< *it << std::endl;
+			i++;
+		}
+
+		std::cout << "client: " << cmd.client << std::endl;
+		std::cout << "chan: " << cmd.chan << std::endl;
+	}
 
 	void join(const Cmd &cmd) {
 		int nbWp = 0;
+		if (cmd.arg.size() < 1)
+			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("JOIN"));
 		// normaly no error if you try to join even if you are already there >> simply ignored cmd
 		for (int i = 0; i < (int)cmd.arg.size(); ++i) // I did this loop if joining multiple channels at the sametime
 		{
-				// make sur that he is not already in the channel
-				// create the channels because it doesnt exist
-				Channel *chan = CMDH::findChan(cmd.arg[i]);
-				if (!chan)
-					CMDH::channelsArr(cmd.client->join(cmd.arg[i]));
-				else {
-					if (!CMDH::joinCheckMode(chan, cmd, nbWp))
+			// make sur that he is not already in the channel
+			// create the channels because it doesnt exist
+			Channel *chan = CMDH::findChan(cmd.arg[i]);
+			if (!chan) {
+				CMDH::channelsArr(cmd.client->join(cmd.arg[i]));
+				std::cout << "CREATE CHANNEL" << std::endl;
+			}
+			else {
+				if (!CMDH::joinCheckMode(chan, cmd, nbWp))
 					continue;
-					cmd.client->join(chan);
-				}				
+				cmd.client->join(chan);
+				std::cout << "JOINED CHANNEL" << std::endl;
+			}
 		}
 	}
 
-	void topic(const Cmd &cmd) {
-		if (cmd.arg.size() > 1)
+	void topic(const Cmd &cmd) {  // la jsp peut etre que ca depends si avec lime chat il est dans une chan
+		std::cout << "TOPIC" << std::endl;
+		printCMD((Cmd &)cmd);
+
+		if (cmd.arg.size() < 1)
 			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("TOPIC"));
-		cmd.chan->topic(cmd.client, cmd.arg[0]);
+		
+		Channel *chan =  CMDH::findChan(cmd.arg[0]);
+		if (!chan)
+			throw std::invalid_argument(Error::ERR_NOSUCHCHANNEL(cmd.arg[0]));
+		// (void)chan;
+		//everything after the cmd topic if just one big string
+		std::cout << (int)cmd.arg.size() << std::endl;
+		if ((int)cmd.arg.size()  > 1) {
+			std::string newTopic;
+			for (int i = 1; i < (int)cmd.arg.size(); i++) {
+				newTopic += cmd.arg[i];
+				newTopic += " ";
+			}
+			chan->topic(cmd.client, newTopic);
+		}
+		else
+			chan->topic(cmd.client);
 	}
 
 	void kick(const Cmd &cmd) {
@@ -44,32 +87,32 @@ namespace CMD {
 	}
 
 	void mode(const Cmd &cmd) {
-			if(cmd.mode == "-I")
-				cmd.chan->setInvitationMode(cmd.client);
-			if(cmd.mode == "+I")
-				cmd.chan->setInvitationMode(cmd.client, true);
-			if(cmd.mode == "-T")
-				cmd.chan->setChopChangeTopic(cmd.client);
-			if(cmd.mode == "+T")
-				cmd.chan->setChopChangeTopic(cmd.client, true);
-			if(cmd.mode == "-K")
-				cmd.chan->setWpMode(cmd.client);
-			if(cmd.mode == "+K")
-				cmd.chan->setWpMode(cmd.client, cmd.arg[0]);
-			if(cmd.mode == "+O")
-				cmd.chan->setChop(cmd.client, cmd.arg[0], true);
-			if(cmd.mode == "-O")
-				cmd.chan->setChop(cmd.client, cmd.arg[0]);
-			if(cmd.mode == "+L") {
+		Channel *chan = CMDH::findChan(cmd.arg[0]);
+			if(cmd.arg[1] == "-i")
+				chan->setInvitationMode(cmd.client);
+			if(cmd.arg[1] == "+i")
+				chan->setInvitationMode(cmd.client, true);
+			if(cmd.arg[1] == "-t")
+				chan->setChopChangeTopic(cmd.client);
+			if(cmd.arg[1] == "+t")
+				chan->setChopChangeTopic(cmd.client, true);
+			if(cmd.arg[1] == "-k")
+				chan->setWpMode(cmd.client);
+			if(cmd.arg[1] == "+k")
+				chan->setWpMode(cmd.client, cmd.arg[2]);
+			if(cmd.arg[1] == "+o")
+				chan->setChop(cmd.client, cmd.arg[1], true);
+			if(cmd.arg[1] == "-o")
+				chan->setChop(cmd.client, cmd.arg[1]);
+			if(cmd.arg[1] == "+l") {
 				// linux i only have access to stoi in c++11
 				// cmd.chan->setLimitMode(cmd.client, std::stoi(cmd.arg[0]));
 				int long nbr;
-				std::stringstream(cmd.arg[0]) >> nbr;
-				cmd.chan->setLimitMode(cmd.client, nbr);
-
+				std::stringstream(cmd.arg[1]) >> nbr;
+				chan->setLimitMode(cmd.client, nbr);
 			}
-			if(cmd.mode == "-L")
-				cmd.chan->setLimitMode(cmd.client);
+			if(cmd.arg[1] == "-l")
+				chan->setLimitMode(cmd.client);
 		}
 
 	// void list(const Cmd &cmd) { // faut til le faire ??

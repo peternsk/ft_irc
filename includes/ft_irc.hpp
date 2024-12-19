@@ -15,6 +15,7 @@
 #include <csignal> //-> for signal()
 #include <stdlib.h> //-> for atol
 #include <algorithm>
+#include <cstring>
 #include <stdexcept>
 #include <sstream>
 /*---- color ----*/
