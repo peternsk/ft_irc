@@ -63,8 +63,6 @@ namespace CMDH {
 				}
 			}
 		} while (sup);
-
-		delete client;
 	}
 	void destroyChan(Channel * chan) {
 		chanVec &Channels = CMDH::channelsArr(NULL);

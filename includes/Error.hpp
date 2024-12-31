@@ -41,8 +41,8 @@ class Error
         static std::string ERR_USERONCHANNEL   (); 
         static std::string RPL_INVITING     (); 
         static std::string RPL_AWAY    (); 
-        static std::string ERR_NOCHANMODES    (); 
-        static std::string ERR_UNKNOWNMODE (); 
+        // static std::string ERR_NOCHANMODES    (); // dont need ?
+        static std::string ERR_UNKNOWNMODE (std::string mode); 
         static std::string RPL_CHANNELMODEIS (); 
         static std::string RPL_BANLIST(); 
         static std::string RPL_ENDOFBANLIST(); 
@@ -51,7 +51,9 @@ class Error
         static std::string RPL_INVITELIST  (); 
         static std::string RPL_ENDOFINVITELIST (); 
         static std::string RPL_UNIQOPIS (); 
-        static std::string ERR_KEYSET(); 
+        static std::string ERR_KEYSET();
+        static std::string ERR_NONICK ();
+
 };
 
 #endif

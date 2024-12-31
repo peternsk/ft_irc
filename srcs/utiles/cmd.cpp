@@ -83,37 +83,51 @@ namespace CMD {
 	}
 
 	void nick(const Cmd &cmd) {
+		if ((int)cmd.arg.size() < 1)
+			throw std::invalid_argument(Error::ERR_NONICK());
+
+/// ICIICICICICICICICI 
+		CMDH::channelsArr(NULL);
+		Server::checkName(cmd.arg[0]);
 		cmd.client->setName(cmd.arg[0]);
+
+		// chaque chan change the name
 	}
 
 	void mode(const Cmd &cmd) {
+		if ((int)cmd.arg.size() < 2)
+			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("MODE"));
 		Channel *chan = CMDH::findChan(cmd.arg[0]);
-			if(cmd.arg[1] == "-i")
-				chan->setInvitationMode(cmd.client);
-			if(cmd.arg[1] == "+i")
-				chan->setInvitationMode(cmd.client, true);
-			if(cmd.arg[1] == "-t")
-				chan->setChopChangeTopic(cmd.client);
-			if(cmd.arg[1] == "+t")
-				chan->setChopChangeTopic(cmd.client, true);
-			if(cmd.arg[1] == "-k")
-				chan->setWpMode(cmd.client);
-			if(cmd.arg[1] == "+k")
-				chan->setWpMode(cmd.client, cmd.arg[2]);
-			if(cmd.arg[1] == "+o")
-				chan->setChop(cmd.client, cmd.arg[1], true);
-			if(cmd.arg[1] == "-o")
-				chan->setChop(cmd.client, cmd.arg[1]);
-			if(cmd.arg[1] == "+l") {
-				// linux i only have access to stoi in c++11
-				// cmd.chan->setLimitMode(cmd.client, std::stoi(cmd.arg[0]));
-				int long nbr;
-				std::stringstream(cmd.arg[1]) >> nbr;
-				chan->setLimitMode(cmd.client, nbr);
-			}
-			if(cmd.arg[1] == "-l")
-				chan->setLimitMode(cmd.client);
+		if (!chan)
+			throw std::invalid_argument(Error::ERR_NOSUCHCHANNEL(cmd.arg[0]));
+		else if(cmd.arg[1] == "-i")
+			chan->setInvitationMode(cmd.client);
+		else if(cmd.arg[1] == "+i")
+			chan->setInvitationMode(cmd.client, true);
+		else if(cmd.arg[1] == "-t")
+			chan->setChopChangeTopic(cmd.client);
+		else if(cmd.arg[1] == "+t")
+			chan->setChopChangeTopic(cmd.client, true);
+		else if(cmd.arg[1] == "-k")
+			chan->setWpMode(cmd.client, cmd.arg);
+		else if(cmd.arg[1] == "+k")
+			chan->setWpMode(cmd.client, cmd.arg);
+		else if(cmd.arg[1] == "+o")
+			chan->setChop(cmd.client, cmd.arg[1], true);
+		else if(cmd.arg[1] == "-o")
+			chan->setChop(cmd.client, cmd.arg[1]);
+		else if(cmd.arg[1] == "+l") {
+			// linux i only have access to stoi in c++11
+			// cmd.chan->setLimitMode(cmd.client, std::stoi(cmd.arg[0]));
+			int long nbr;
+			std::stringstream(cmd.arg[1]) >> nbr;
+			chan->setLimitMode(cmd.client, nbr);
 		}
+		else if(cmd.arg[1] == "-l")
+			chan->setLimitMode(cmd.client);
+		else
+			throw std::invalid_argument(Error::ERR_UNKNOWNMODE(cmd.arg[1]));
+	}
 
 	// void list(const Cmd &cmd) { // faut til le faire ??
 
@@ -122,20 +136,52 @@ namespace CMD {
 
 	// }
 	void msg(const Cmd &cmd) {
-		Client * toSend = CMDH::findClient(cmd.arg[0]);
-		if (!toSend)
-			std::invalid_argument(Error::ERR_NOSUCHNICK(cmd.arg[0]));
-		// envoyer un message *********************************
+		if ((int)cmd.arg.size() < 2)
+			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("MSG"));
+
+		std::string msg = cmd.client->getName();
+		msg += " :";
+		for(int i = 1; i < (int)cmd.arg.size(); i++) {
+			msg += " ";
+			msg += cmd.arg[i];
+		}
+		msg += "\n";
+
+		// if its a chan
+		if ((char)cmd.arg[0][0] == '#') {
+			Channel *chan = CMDH::findChan(cmd.arg[0]);
+			//chan does not exist
+			if (!chan)
+				throw std::invalid_argument(Error::ERR_NOSUCHCHANNEL(cmd.arg[0]));
+			
+			if (!chan->hasClient(cmd.client))
+				std::invalid_argument(Error::ERR_NOTONCHANNEL(chan->getName())); 
+			std::string chanMsg = "[" + chan->getName() + "] " + msg;
+			chan->sendMSGClient(chanMsg, cmd.client);
+		}
+		else {
+			Client * toSend = &(Server::findClient(cmd.arg[0]));
+			send(toSend->GetFd(), msg.c_str(), msg.length(), 0);
+		}
+
+
+
+		// envoyer un message ********************************* 
 	}
-	void part(const Cmd &cmd) {
-		CMDH::removeClientChan(cmd.client, cmd.chan);
+	void part(const Cmd &cmd) { // yeah works fine
+		if ((int)cmd.arg.size() < 1)
+			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("PART"));
+		Channel *chan = CMDH::findChan(cmd.arg[0]);
+		//chan does not exist
+		if (!chan)
+			throw std::invalid_argument(Error::ERR_NOSUCHCHANNEL(cmd.arg[0]));
+			// not on channel
+		if (!chan->hasClient(cmd.client))
+			throw std::invalid_argument(Error::ERR_NOTONCHANNEL(cmd.arg[0]));
+		CMDH::removeClientChan(cmd.client, chan);
 	}
 	void quit(const Cmd &cmd) {
 		CMDH::clientDisconnect(cmd.client);
-	}
-	void cmsg(const Cmd &cmd) {
-		if (!cmd.chan->hasClient(cmd.client))
-			std::invalid_argument(Error::ERR_NOTONCHANNEL(cmd.chan->getName())); 
-		cmd.chan->sendMSGClient(cmd.arg[0], cmd.client);
+		//// actualy disconnect the client
 	}
 }

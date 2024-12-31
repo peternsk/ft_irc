@@ -73,45 +73,46 @@
 
 	void Channel::setInvitationMode(Client *asking, bool setOnlyInvite) {
 		if (!asking->getChop(this))
-			return ; //THROW ERROR
+			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 		_isOnlyInvite = setOnlyInvite;
 	}
 
 	void Channel::setLimitMode(Client *asking, int setLimit) {
 		if (!asking->getChop(this))
-			return ; //THROW ERROR
+			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 		_limitPeople = setLimit;
 	}
 
-	void Channel::setWpMode(Client *asking, std::string wp) {
-		std::cout << "lol" << std::endl;
+	void Channel::setWpMode(Client *asking, std::vector<std::string> arg) {
 		if (!asking->getChop(this))
-			return ; //THROW ERROR
-		if (wp.empty())
+			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
+		if ((int)arg.size() < 3)
 			_needPw = false;
 		else {
 			_needPw = true;
-			_wp = wp;
+			_wp = arg[2];
 		}
 	}
 
 	void Channel::setChopChangeTopic(Client *asking, bool setChopTopic) {
 		if (!asking->getChop(this))
-			return ; //THROW ERROR
+			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 		_isChopTopic = setChopTopic;
 	}
 
 	void Channel::setChop(Client *asking, const std::string &name, bool SetChop) {
+		listClients();
 		if (!asking->getChop(this))
-			return ; 	// OR THROW EXECPTIONS
+			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 
-		if (clients.find(name) != clients.end())
-			clients[name]->setChop(SetChop, this);
+		if (clients.find(name) == clients.end())
+			throw std::invalid_argument(Error::ERR_NOSUCHNICK(name));
+		clients[name]->setChop(SetChop, this);
 	}
 
 	void Channel::addClient(Client * client) {
 		if (!client)
-			return ; //THROW EXEPTION
+			return ;
 		if (_nbPeople == 0)
 			client->setChop(true, this);
 		_nbPeople++;
@@ -125,22 +126,18 @@
 	}
 
 	void Channel::listClients(void) {
+		std::cout << clients.size() << " this is the size" << std::endl;
 		for (std::map <std::string, Client * >::iterator it = clients.begin(); it != clients.end(); ++it) {
 			std::cout << it->first << std::endl;
 		}
 	}
 
 	void Channel::sendMSGClient(const std::string &msg, Client * sender) {
-		(void)msg;
-		(void)sender;
-
-		for (std::map<std::string, Client *>::iterator it; it != clients.end(); ++it) {
-			// if (it->getName() != Client->getName())
-			// // fd a changer
-			// if (send(it->fd, , 0) == 1)
-			// 	throw std::exception();
+		for (std::map<std::string, Client *>::iterator it = clients.begin(); it != clients.end(); ++it) {
+			if (it->first == sender->getName())
+				continue;
+			send(it->second->GetFd(), msg.c_str(), msg.length(), 0);		
 		}
-
 	}
 
 	bool Channel::hasClient(Client * client) {
@@ -154,9 +151,6 @@
 	}
 
 	bool Channel::tryWp(const std::string & trywp) {
-		std::cout << trywp << "dfgdfgdfgdfgdfggdf" << std::endl;
-		std::cout << _wp << "dfgdfgdfgdfgdfggdf" << std::endl;
-
 		if (_wp == trywp)
 			return true;
 		return false;

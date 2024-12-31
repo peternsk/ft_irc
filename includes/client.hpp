@@ -21,6 +21,7 @@ public :
 	std::string getName(void);
 
 	Channel *join(std::string name);
+	
 	void join(Channel *chan);
 
 	void removeChan(Channel *chan);
