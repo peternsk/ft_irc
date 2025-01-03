@@ -25,7 +25,11 @@
 		if (client)
 		{
 			if (PendingInvite(client))
+			{
+				std::cout << "ispending invite" << std::endl;
 				return false;
+
+			}
 		}
 		return _isOnlyInvite;
 	}
@@ -164,6 +168,7 @@
 	bool Channel::PendingInvite(Client *newPending) {
 		for (std::vector <Client *>::iterator it = pendingInvite.begin(); it != pendingInvite.end(); it++)
 			if(*it == newPending) {
+				std::cout << "newpending" << std::endl;
 				pendingInvite.erase(it);
 				return (true);
 			}

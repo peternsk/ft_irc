@@ -69,17 +69,24 @@ namespace CMD {
 	}
 
 	void kick(const Cmd &cmd) {
-		if (cmd.chan->hasClient(cmd.client))
-		{
-			// get client to kick
-			Client *toKick = CMDH::findClient(cmd.arg[0]);
-			if (!toKick)
-				throw std::invalid_argument(Error::ERR_NOSUCHNICK(cmd.arg[0]));
-			cmd.client->kick(toKick, cmd.chan);
-		}
-		 // does not have the one doing the cmd
-		else
-			throw std::invalid_argument(Error::ERR_NOTONCHANNEL(cmd.chan->getName()));
+		if ((int)cmd.arg.size() < 2)
+			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("KICK"));
+
+		Channel *chan = CMDH::findChan(cmd.arg[0]);
+		if (!chan) 
+			throw std::invalid_argument(Error::ERR_NOSUCHCHANNEL(cmd.arg[0]));
+		if (!chan->hasClient(cmd.client))
+			throw std::invalid_argument(Error::ERR_NOTONCHANNEL(chan->getName()));
+		
+		Client * toKick = &(Server::findClient(cmd.arg[1]));
+		if (toKick->GetFd() == cmd.client->GetFd())
+			return ;
+		if (!toKick->isPartChan(chan))
+			throw std::invalid_argument(Error::ERR_USERNOTINCHANNEL(toKick->getName(), chan->getName()));
+			
+
+		// get client to kick
+		cmd.client->kick(toKick, chan);
 	}
 
 	void nick(const Cmd &cmd) {
@@ -134,6 +141,7 @@ namespace CMD {
 	// }
 
 	void invite(const Cmd &cmd) {
+		// CHECK LES RIGHTS DES GENS err 482
 		if ((int)cmd.arg.size() != 2)
 			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("INVITE"));
 		Channel *chan = CMDH::findChan(cmd.arg[1]);
@@ -143,7 +151,6 @@ namespace CMD {
 		if (!cmd.client->isPartChan(chan))
 			throw std::invalid_argument(Error::ERR_NOTONCHANNEL(chan->getName()));
 
-
 		Client * toSend = &(Server::findClient(cmd.arg[0]));
 
 		std::string msg = cmd.client->getName() + " INVITE " + toSend->getName() + ": " + chan->getName() + "\n";
@@ -151,6 +158,8 @@ namespace CMD {
 			throw std::invalid_argument(Error::ERR_USERONCHANNEL(cmd.arg[0], cmd.arg[1]));
 		if (!toSend->isPartChan(chan))
 			send(toSend->GetFd(), msg.c_str(), msg.length(), 0);
+		else
+			return ;
 		chan->PendingInvite(toSend);
 	}
 

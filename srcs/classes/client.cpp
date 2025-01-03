@@ -63,7 +63,7 @@
 			return ;
 		if (_Channels.find(chan) != _Channels.end())
 		{
-			if (_Channels[chan] == true && client->isPartChan(chan))
+			if (_Channels[chan] == true)
 			{
 				client->removeChan(chan);
 				chan->kick(client);
@@ -74,8 +74,6 @@
 				throw std::runtime_error(Error::ERR_USERNOTINCHANNEL(client->getName(), chan->getName()));
 			// else return dont have permition ou que le client nest pas dans le channel
 		}
-		throw std::runtime_error(Error::ERR_NOTONCHANNEL(chan->getName()));
-		// else retourne client is not in the channel
 	}
 
 	/********************/
