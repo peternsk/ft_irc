@@ -20,7 +20,7 @@ class Channel {
 	//getters
 	std::string getName(void) const;
 	short getNbPeople(void) const;
-	bool getIsInviteOnly(void) const;
+	bool getIsInviteOnly(Client *client);
 	bool getNeedWp(void) const;
 
 	bool tryWp(const std::string & trywp);
@@ -49,6 +49,7 @@ class Channel {
 // **************************************************************//
 	// — i : Définir/supprimer le canal sur invitation uniquement
 	void setInvitationMode(Client *asking, bool setOninvite = false);
+	bool PendingInvite(Client *newPending);
 	// — t : Définir/supprimer les restrictions de la commande TOPIC pour les opé-
 	// rateurs de canaux
 	void setChopChangeTopic(Client *asking, bool setChopTopic = false);
@@ -64,7 +65,7 @@ class Channel {
 	std::string _name;
 	std::string _topic;
 	int _nbPeople;
-
+	std::vector < Client *> pendingInvite;
 // for modes
 	// changing the topic only chop
 	bool _isChopTopic;

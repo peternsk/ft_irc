@@ -11,7 +11,7 @@ namespace CMD {
 	void nick(const Cmd &cmd);
 	void mode(const Cmd &cmd);
 	// void list(const Cmd &cmd);
-	// void invite(const Cmd &cmd);
+	void invite(const Cmd &cmd);
 	void msg(const Cmd &cmd);
 	void part(const Cmd &cmd);
 	void quit(const Cmd &cmd);

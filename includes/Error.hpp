@@ -38,7 +38,7 @@ class Error
         static std::string ERR_USERNOTINCHANNEL    (std::string name, std::string chan); 
         static std::string ERR_NOTONCHANNEL   (std::string chan); 
         static std::string ERR_NOSUCHNICK   (std::string name); 
-        static std::string ERR_USERONCHANNEL   (); 
+        static std::string ERR_USERONCHANNEL   (std::string name, std::string chan); 
         static std::string RPL_INVITING     (); 
         static std::string RPL_AWAY    (); 
         // static std::string ERR_NOCHANMODES    (); // dont need ?

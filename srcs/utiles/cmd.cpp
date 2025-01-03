@@ -132,15 +132,34 @@ namespace CMD {
 	// void list(const Cmd &cmd) { // faut til le faire ??
 
 	// }
-	// void invite(const Cmd &cmd) { // comment faire?
 
-	// }
+	void invite(const Cmd &cmd) {
+		if ((int)cmd.arg.size() != 2)
+			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("INVITE"));
+		Channel *chan = CMDH::findChan(cmd.arg[1]);
+		if (!chan) 
+			throw std::invalid_argument(Error::ERR_NOSUCHCHANNEL(cmd.arg[1]));
+
+		if (!cmd.client->isPartChan(chan))
+			throw std::invalid_argument(Error::ERR_NOTONCHANNEL(chan->getName()));
+
+
+		Client * toSend = &(Server::findClient(cmd.arg[0]));
+
+		std::string msg = cmd.client->getName() + " INVITE " + toSend->getName() + ": " + chan->getName() + "\n";
+		if (toSend->GetFd() == cmd.client->GetFd())
+			throw std::invalid_argument(Error::ERR_USERONCHANNEL(cmd.arg[0], cmd.arg[1]));
+		if (!toSend->isPartChan(chan))
+			send(toSend->GetFd(), msg.c_str(), msg.length(), 0);
+		chan->PendingInvite(toSend);
+	}
+
 	void msg(const Cmd &cmd) {
 		if ((int)cmd.arg.size() < 2)
 			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("MSG"));
 
 		std::string msg = cmd.client->getName();
-		msg += " :";
+		msg += ":";
 		for(int i = 1; i < (int)cmd.arg.size(); i++) {
 			msg += " ";
 			msg += cmd.arg[i];

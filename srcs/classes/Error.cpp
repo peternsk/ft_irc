@@ -23,7 +23,7 @@ std::string Error::RPL_TOPIC    (std::string chan, std::string topic) {return "3
 std::string Error::ERR_USERNOTINCHANNEL    (std::string name, std::string chan) {return "441 " + name + " " + chan + ":They aren't on that channel\n";}
 std::string Error::ERR_NOTONCHANNEL   (std::string chan) {return "442 " +  chan + ": You're not on that channel\n";}
 std::string Error::ERR_NOSUCHNICK   (std::string name) {return "401 " + name + ": No such nick/channel\n";}
-std::string Error::ERR_USERONCHANNEL   () {return "443  <user> <channel> : is already on channel\n";}
+std::string Error::ERR_USERONCHANNEL   (std::string name, std::string chan) {return "443 " + name + " " + chan + ": is already on channel\n";}
 std::string Error::RPL_INVITING     () {return "341  <channel> <nick>\n";}
 std::string Error::RPL_AWAY    () {return "301 <nick> : <away message>\n";}
 std::string Error::ERR_KEYSET   () {return "476 <channel> : Channel key already set\n"; }

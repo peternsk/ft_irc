@@ -227,13 +227,13 @@ int Server::foundCmd(std::list <std::string>&cmdArr, const std::string& cmd) {
 }
 
 void Server::cmdHandler(int m_fd, std::string clientRequest){
-	std::string cmdArr[] = {"JOIN", "KICK", "TOPIC", "MODE", "NICK",  "MSG", "PART", "QUIT", "USER", "INVITE"};
-
-	std::list<std::string> cmdList(cmdArr, cmdArr + 8);
+	std::string cmdArr[] = {"JOIN", "KICK", "TOPIC", "MODE", "NICK",  "MSG", "PART", "QUIT", "INVITE"};
+	std::list<std::string> cmdList(cmdArr, cmdArr + sizeof(&cmdArr) + 1);
 
 	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
 
-	//print tokens DEBUG
+
+/// DEBUG**************
 	std::cout << std::endl;
 	int i = 0;
 	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++) {
@@ -241,10 +241,10 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 		i++;
 	}
 	std::cout << "END"<< std::endl;
-
+//************* */
 
 	void (*cmdFuncArr[])(const Cmd &cmd) = {CMD::join, CMD::kick,
-			CMD::topic, CMD::mode, CMD::nick, CMD::msg, CMD::part, CMD::quit}; // y va falloir add cmsg message pour channel
+			CMD::topic, CMD::mode, CMD::nick, CMD::msg, CMD::part, CMD::quit, CMD::invite};
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
 
@@ -252,7 +252,7 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 	if(cmdPos >= 0){
 		Cmd cmd = vectorToStruct(tokens, m_fd);
 		try {
-			std::cout << "client name" << cmd.client->getName() << std::endl;
+			std::cout << "client name" << cmd.client->getName() << cmdPos<< std::endl;
     		(cmdFuncArr[cmdPos])(cmd);
 		}
 		catch  (const std::exception& e) {

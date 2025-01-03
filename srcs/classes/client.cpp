@@ -53,7 +53,7 @@
 
 	void Client::join(Channel *chan) {
 		if (_Channels.find(chan) != _Channels.end())
-			throw std::exception(); // change the exepiton "tried to join a Channel already in"
+			throw std::invalid_argument(Error::ERR_USERONCHANNEL(_name, chan->getName())); // change the exepiton "tried to join a Channel already in"
 		_Channels[chan] = false;
 		chan->addClient(this);
 	}

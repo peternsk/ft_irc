@@ -72,8 +72,10 @@ namespace CMDH {
 	}
 
 	bool joinCheckMode(Channel * chan, const Cmd & cmd, int & nbWp) {
-		if (chan->getIsInviteOnly())
+		if (chan->getIsInviteOnly(cmd.client))
 			throw std::invalid_argument(Error::ERR_INVITEONLYCHAN(chan->getName()));
+
+
 		if (chan->getNeedWp())
 		{
 			nbWp++;

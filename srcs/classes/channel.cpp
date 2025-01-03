@@ -21,7 +21,12 @@
 	std::string Channel::getName(void) const {
 		return _name;
 	}
-	bool Channel::getIsInviteOnly(void) const {
+	bool Channel::getIsInviteOnly(Client *client) {
+		if (client)
+		{
+			if (PendingInvite(client))
+				return false;
+		}
 		return _isOnlyInvite;
 	}
 
@@ -153,5 +158,15 @@
 	bool Channel::tryWp(const std::string & trywp) {
 		if (_wp == trywp)
 			return true;
+		return false;
+	}
+
+	bool Channel::PendingInvite(Client *newPending) {
+		for (std::vector <Client *>::iterator it = pendingInvite.begin(); it != pendingInvite.end(); it++)
+			if(*it == newPending) {
+				pendingInvite.erase(it);
+				return (true);
+			}
+		pendingInvite.push_back(newPending);
 		return false;
 	}
