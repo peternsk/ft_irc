@@ -14,7 +14,7 @@ std::string Error::ERR_NEEDMOREPARAMS   (std::string cmd) { return "\033[31;1m46
 std::string Error::ERR_BANNEDFROMCHAN   () { return "<channel>\033[35;3m :Cannot join channel (+b)\033[0m\n";}
 std::string Error::ERR_INVITEONLYCHAN    (std::string chan) {return "\033[31;1m473 \033[34m" + chan + "\033[35;3m :Cannot join channel (+i)\033[0m\n" ; }
 std::string Error::ERR_BADCHANNELKEY    (std::string chan) { return "\033[31;1m475 \033[34m" + chan + "\033[35;3m :Cannot join channel (+k)\033[0m\n";}
-std::string Error::ERR_CHANNELISFULL    () {return "\033[35;3m471 <channel> : Cannot join channel (+l)\033[0m\n";}
+std::string Error::ERR_CHANNELISFULL    (std::string chan) {return "\033[35;3m471 " + chan + ": Cannot join channel (+l)\033[0m\n";}
 std::string Error::ERR_BADCHANMASK    () {return "\033[35;3m 476 <channel> : Bad Channel Mask\033[0m\n";}
 std::string Error::ERR_NOSUCHCHANNEL     (std::string chan) {return "\033[31;1m403 \033[34m" + chan + "\033[35;3m : No such channel\033[0m\n";}
 std::string Error::ERR_TOOMANYCHANNELS     () {return "\033[31;1m405 <channel name> : You have joined too many channels\033[0m\n";}
@@ -46,5 +46,3 @@ std::string Error::ERR_NONICK () {return "\033[31;1m431 : No nickname given\033[
 // KICK
 // NICK
 // PART
-
-// lorsque parsing a command checker si le client et channel exist

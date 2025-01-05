@@ -59,7 +59,7 @@ class Channel {
 	void setChop(Client *asking, const std::string &name, bool SetChop = false);
 	// — l : Définir/supprimer la limite d’utilisateurs pour le canal
 	void setLimitMode(Client *asking, int setLimit = -1);
-
+	bool checkLimitNbrPeople();
 
 	private:
 	std::string _name;

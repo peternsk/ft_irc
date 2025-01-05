@@ -83,6 +83,9 @@ namespace CMDH {
 		}
 		if (chan->getIsInviteOnly(cmd.client))
 			throw std::invalid_argument(Error::ERR_INVITEONLYCHAN(chan->getName()));
+		if (!chan->checkLimitNbrPeople())
+			throw std::invalid_argument(Error::ERR_CHANNELISFULL(chan->getName()));
+		
 		return true;
 	}
 

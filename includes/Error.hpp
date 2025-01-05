@@ -28,7 +28,7 @@ class Error
         static std::string ERR_BANNEDFROMCHAN   (); 
         static std::string ERR_INVITEONLYCHAN    (std::string chan); 
         static std::string ERR_BADCHANNELKEY    (std::string chan); 
-        static std::string ERR_CHANNELISFULL    (); 
+        static std::string ERR_CHANNELISFULL    (std::string chan); 
         static std::string ERR_BADCHANMASK    (); 
         static std::string ERR_NOSUCHCHANNEL     (std::string chan); 
         static std::string ERR_TOOMANYCHANNELS     (); 

@@ -127,7 +127,7 @@ namespace CMD {
 			// linux i only have access to stoi in c++11
 			// cmd.chan->setLimitMode(cmd.client, std::stoi(cmd.arg[0]));
 			int long nbr;
-			std::stringstream(cmd.arg[1]) >> nbr;
+			std::stringstream(cmd.arg[2]) >> nbr;
 			chan->setLimitMode(cmd.client, nbr);
 		}
 		else if(cmd.arg[1] == "-l")

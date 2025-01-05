@@ -72,7 +72,6 @@
 				throw std::runtime_error(Error::ERR_CHANOPRIVSNEEDED(chan->getName()));
 			else
 				throw std::runtime_error(Error::ERR_USERNOTINCHANNEL(client->getName(), chan->getName()));
-			// else return dont have permition ou que le client nest pas dans le channel
 		}
 	}
 

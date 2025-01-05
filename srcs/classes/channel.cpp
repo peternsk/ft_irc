@@ -175,3 +175,9 @@
 		pendingInvite.push_back(newPending);
 		return false;
 	}
+
+	bool Channel::checkLimitNbrPeople() {
+		if (_limitPeople == -1)
+			return true;
+		return _limitPeople <= _nbPeople ? false : true;
+	}
