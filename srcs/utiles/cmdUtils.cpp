@@ -74,7 +74,6 @@ namespace CMDH {
 	bool joinCheckMode(Channel * chan, const Cmd & cmd, int & nbWp) {
 		if (chan->getNeedWp())
 		{
-			// std::cout << cmd.arg[1]  << "******************" << std::endl;
 			nbWp++;
 			if ((int)cmd.password.size() < nbWp)
 				throw std::invalid_argument(Error::ERR_BADCHANNELKEY(chan->getName()));

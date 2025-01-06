@@ -207,7 +207,8 @@ std::vector<std::string> Server::setCmdList(std::string clientRequest){
         	tokens.push_back("EMPTY");
         	// tokens.push_back(token);
 		}
-        tokens.push_back(token);
+		if (token != "")
+        	tokens.push_back(token);
         clientRequest.erase(0, pos + 1);
     }
     // tokens.push_back(clientRequest); tout est enlever normalement fac c vide cause des probleme sinon
@@ -248,7 +249,6 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
 
-
 	if(cmdPos >= 0){
 		Cmd cmd = vectorToStruct(tokens, m_fd);
 		try {
@@ -256,7 +256,6 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
     		(cmdFuncArr[cmdPos])(cmd);
 		}
 		catch  (const std::exception& e) {
-			// send the error to the clients
 			send(m_fd, e.what(), strlen(e.what()), 0);
 		}
 	}
@@ -350,12 +349,6 @@ Cmd Server::vectorToStruct(std::vector<std::string> tokens, int fd){
 }
 
 
-// cestt supposer marcher comment la avec les chans 
-
-// si ya personne dans une channel ca doit delete la chan /// marche pas
-
-// check list
-// topic
 // mode +k -k +i -i +t
 
 // probleme si tu fais une commande avec un espace sans rien
