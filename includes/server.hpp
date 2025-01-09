@@ -47,6 +47,8 @@ class Server {
 	    void closeFds();
 	    void clearClients(int fd);
 		void ircLogo();
+		void disconnect(Client * client);
+
 
 		/****************/
 		/* mid parssing */
@@ -66,7 +68,7 @@ class Server {
 		Client& getClientClass(int fd);
 		void addClientToList(int fd);
 		static void checkName(std::string name);
-		static Client &findClient(std::string name);
+		static Client *findClient(std::string name, int fd = -1);
 
     private:
         int serPort;

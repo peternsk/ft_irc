@@ -3,7 +3,6 @@
 
 #include "ft_irc.hpp"
 #include "struct.hpp"
-
 namespace CMD {
 	void join(const Cmd &cmd);
 	void topic(const Cmd &cmd);

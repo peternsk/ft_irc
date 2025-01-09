@@ -3,7 +3,7 @@ Error::Error(/* args */){}
 
 Error::~Error(){}
 std::string Error::ERR_ERRONEUSNICKNAME(std::string name){
-    return  "432 "  + name +  ":Erroneous nickname" ;
+    return  "\033[31;1m432 "  + name +  "\033[35;3m: Erroneous nickname\033[0m\n" ;
 }
 std::string Error::ERR_TOPICNOTSET   (std::string chan) { return "\033[31;1m331 \033[34m" + chan + "\033[35;3m :No topic is set\033[0m\n";}
 std::string Error::ERR_NICKNAMEINUSE   (std::string name) { return "\033[31;1m433 \033[34m" + name + "\033[35;3m :Nickname is already in use\033[0m\n";}

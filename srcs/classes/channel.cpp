@@ -143,7 +143,7 @@
 
 	void Channel::sendMSGClient(const std::string &msg, Client * sender) {
 		for (std::map<std::string, Client *>::iterator it = clients.begin(); it != clients.end(); ++it) {
-			if (it->first == sender->getName())
+			if (it->second->GetFd() == sender->GetFd())
 				continue;
 			send(it->second->GetFd(), msg.c_str(), msg.length(), 0);		
 		}

@@ -1,7 +1,7 @@
 #include "client.hpp"
 
 
-	Client::Client() {}
+	Client::Client() : _needQuit(false) {}
 	Client::~Client() {
 	}
 
@@ -14,7 +14,7 @@
     return true;
 }
 
-	Client::Client(std::string name) {
+	Client::Client(std::string name) : _needQuit(false) {
 
 		// mettre ca ou tu creer le client
 		if (isAlphaNumeric(name))
@@ -23,6 +23,7 @@
 		if (!CMDH::findClient(name))
 			throw std::invalid_argument(Error::ERR_NICKNAMEINUSE(name));
 		_name = name;
+		_needQuit = false;
 	}
 
 	void Client::setChop(bool SetChop, Channel * chan) {
@@ -45,6 +46,8 @@
 	}
 
 	Channel *Client::join(std::string name) {
+		if ((char)name[0] != '#')
+			throw std::invalid_argument(Error::Error::ERR_NOSUCHCHANNEL(name));
 		Channel *newChan = new Channel(name);
 		newChan->addClient(this);
 		_Channels[newChan] = true;
@@ -110,4 +113,11 @@
 		{
 			std::cout << it->first->getName() << std::endl;
 		}
+	}
+	bool Client::needQuit() {
+		return _needQuit;
+	}
+
+	void Client::setQuit() {
+		_needQuit = true;
 	}

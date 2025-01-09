@@ -91,9 +91,9 @@ namespace CMD {
 
 	void nick(const Cmd &cmd) {
 		if ((int)cmd.arg.size() < 1)
-			throw std::invalid_argument(Error::ERR_NONICK());
+			throw std::invalid_argument(Error::ERR_ERRONEUSNICKNAME(cmd.arg[0]));
 
-/// ICIICICICICICICICI 
+
 		CMDH::channelsArr(NULL);
 		Server::checkName(cmd.arg[0]);
 		cmd.client->setName(cmd.arg[0]);
@@ -164,6 +164,7 @@ namespace CMD {
 	}
 
 	void msg(const Cmd &cmd) {
+		std::cout << "FD**************" <<cmd.client->GetFd() << std::endl;
 		if ((int)cmd.arg.size() < 2)
 			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("MSG"));
 
@@ -209,7 +210,6 @@ namespace CMD {
 		CMDH::removeClientChan(cmd.client, chan);
 	}
 	void quit(const Cmd &cmd) {
-		CMDH::clientDisconnect(cmd.client);
-		//// actualy disconnect the client
+		cmd.client->setQuit();
 	}
 }

@@ -42,6 +42,7 @@ void Server::ircLogo(){
 	std::cout << std::endl;
 }
 
+
 void Server::serSocket()
 {
 	struct sockaddr_in add;
@@ -83,7 +84,9 @@ void Server::serverInit()
 			throw(std::runtime_error("poll() faild"));
 
 		for (size_t i = 0; i < fds.size(); i++)
-		{
+		{	
+			// check if he has done the CMD QUIT
+
 			std::cout << "test 1...\n";
 			if (fds[i].revents & POLLIN)
 			{
@@ -92,9 +95,25 @@ void Server::serverInit()
 				else
 					receiveNewData(fds[i].fd);
 			}
+			// check si il doit quit
+			if (fds[i].fd > 0) {
+				Client * client = findClient("", fds[i].fd);
+				if (!client)
+					continue;
+				if ((client->needQuit()))
+					disconnect(client);
+			}
 		}
 	}
 	closeFds();
+}
+
+void Server::disconnect(Client * client) {
+	std::cout << RED << "Client <" << client->GetFd() << "> Disconnected" << WHI << std::endl;
+	CMDH::clientDisconnect(client);
+	int fd = client->GetFd();
+	clearClients(fd);
+	close(fd);
 }
 
 bool Server::sig = false;
@@ -178,15 +197,13 @@ void Server::receiveNewData(int m_fd)
 	memset(buff, 0, sizeof(buff));
 
 	ssize_t bytes = recv(m_fd, buff, sizeof(buff) - 1 , 0);
+	Client * client = findClient("", m_fd);
 
-	if(bytes <= 0){
-		std::cout << RED << "Client <" << m_fd << "> Disconnected" << WHI << std::endl;
-		clearClients(m_fd);
-		close(m_fd);
-	}
+	if(bytes <= 0)
+		disconnect(client);
 	else{
 		buff[bytes] = '\0';
-		Server::cmdHandler(m_fd, buff);
+		Server::cmdHandler(m_fd, buff);	
 	}
 }
 
@@ -233,7 +250,6 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 	std::list<std::string> cmdList(cmdArr, cmdArr + sizeof(&cmdArr) + 1);
 
 	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
-
 
 /// DEBUG**************
 	std::cout << std::endl;
@@ -286,6 +302,8 @@ void Server::addClientToList(int fd){
 }
 
 void Server::checkName(std::string name) {
+	if ((int)name.size() > 20)
+			throw std::invalid_argument(Error::ERR_ERRONEUSNICKNAME(name));
 	std::vector<Client>::iterator it;
 	for (it = clients.begin(); it != clients.end(); ++it) {
 		if (name == it->getName())
@@ -297,12 +315,20 @@ void Server::checkName(std::string name) {
     	}
 }
 
-Client &Server::findClient(std::string name) {
+Client *Server::findClient(std::string name, int fd) {
+	
 	std::vector<Client>::iterator it;
 	for (it = clients.begin(); it != clients.end(); ++it) {
+		if (fd != -1) {
+			if (it->GetFd() == fd)
+				return &(*it);
+			continue;
+		}
 		if (name == it->getName())
-			return *it;
+			return &(*it);
 	}
+	if (fd != -1)
+		return NULL;
 	throw std::invalid_argument(Error::ERR_NOSUCHNICK(name));
 }
 
