@@ -53,6 +53,8 @@ class Error
         static std::string RPL_UNIQOPIS (); 
         static std::string ERR_KEYSET();
         static std::string ERR_NONICK ();
+        static std::string ERR_WRONGCMD(std::string name, std::string wrongCmd);
+
 
 };
 

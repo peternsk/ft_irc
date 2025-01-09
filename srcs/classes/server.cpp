@@ -224,7 +224,8 @@ int Server::foundCmd(std::list <std::string>&cmdArr, const std::string& cmd) {
 		}
 		pos++;
     }
-	return (std::cout << RED << "COMMAND NOT FOUND" << WHI << std::endl, -1);
+	// return (std::cout << RED << "COMMAND NOT FOUND" << WHI << std::endl, -1);
+	return -1;
 }
 
 void Server::cmdHandler(int m_fd, std::string clientRequest){
@@ -248,9 +249,9 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 			CMD::topic, CMD::mode, CMD::nick, CMD::msg, CMD::part, CMD::quit, CMD::invite};
 
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
-
+	
+	Cmd cmd = vectorToStruct(tokens, m_fd);
 	if(cmdPos >= 0){
-		Cmd cmd = vectorToStruct(tokens, m_fd);
 		try {
 			std::cout << "client name" << cmd.client->getName() << cmdPos<< std::endl;
     		(cmdFuncArr[cmdPos])(cmd);
@@ -258,6 +259,11 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 		catch  (const std::exception& e) {
 			send(m_fd, e.what(), strlen(e.what()), 0);
 		}
+	}
+	else {
+		std::cout << tokens.at(1) << std::endl;
+		std::string wrongCmd = Error::ERR_WRONGCMD(cmd.client->getName(), tokens.at(1));
+		send(m_fd, wrongCmd.c_str(), strlen(wrongCmd.c_str()), 0);
 	}
 }
 
