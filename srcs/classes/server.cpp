@@ -213,7 +213,7 @@ std::vector<std::string> Server::setCmdList(std::string clientRequest){
     std::string token;
 
     size_t pos = 0;
-
+	
     while (((pos = clientRequest.find(" ")) != std::string::npos)
 		|| ((pos = clientRequest.find(",")) != std::string::npos)
 		|| ((pos = clientRequest.find('\n')) != std::string::npos)

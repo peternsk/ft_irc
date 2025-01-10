@@ -78,7 +78,7 @@ namespace CMD {
 		if (!chan->hasClient(cmd.client))
 			throw std::invalid_argument(Error::ERR_NOTONCHANNEL(chan->getName()));
 		
-		Client * toKick = &(Server::findClient(cmd.arg[1]));
+		Client * toKick = Server::findClient(cmd.arg[1]);
 		if (toKick->GetFd() == cmd.client->GetFd())
 			return ;
 		if (!toKick->isPartChan(chan))
@@ -151,7 +151,7 @@ namespace CMD {
 		if (!cmd.client->isPartChan(chan))
 			throw std::invalid_argument(Error::ERR_NOTONCHANNEL(chan->getName()));
 
-		Client * toSend = &(Server::findClient(cmd.arg[0]));
+		Client * toSend = Server::findClient(cmd.arg[0]);
 
 		std::string msg = cmd.client->getName() + " INVITE " + toSend->getName() + ": " + chan->getName() + "\n";
 		if (toSend->GetFd() == cmd.client->GetFd())
@@ -189,7 +189,7 @@ namespace CMD {
 			chan->sendMSGClient(chanMsg, cmd.client);
 		}
 		else {
-			Client * toSend = &(Server::findClient(cmd.arg[0]));
+			Client * toSend = Server::findClient(cmd.arg[0]);
 			send(toSend->GetFd(), msg.c_str(), msg.length(), 0);
 		}
 
