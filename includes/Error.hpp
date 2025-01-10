@@ -55,6 +55,12 @@ class Error
         static std::string ERR_NONICK ();
         static std::string ERR_WRONGCMD(std::string name, std::string wrongCmd);
         static std::string RPL_JOINCHAN (std::string name, std::string chan);
+        static std::string RPL_QUITCHAN (std::string name, std::string chan);
+        static std::string RPL_KICKCHAN (std::string name, std::string chan);
+        static std::string RPL_MSGCHAN (std::string name, std::string chan, std::string msg);
+        static std::string RPL_MSG (std::string name, std::string msg);
+
+
 
 
 

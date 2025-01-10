@@ -85,7 +85,7 @@ namespace CMD {
 		if (!toKick->isPartChan(chan))
 			throw std::invalid_argument(Error::ERR_USERNOTINCHANNEL(toKick->getName(), chan->getName()));
 			
-
+		
 		// get client to kick
 		cmd.client->kick(toKick, chan);
 	}
@@ -94,12 +94,9 @@ namespace CMD {
 		if ((int)cmd.arg.size() < 1)
 			throw std::invalid_argument(Error::ERR_ERRONEUSNICKNAME(cmd.arg[0]));
 
-
 		CMDH::channelsArr(NULL);
 		Server::checkName(cmd.arg[0]);
 		cmd.client->setName(cmd.arg[0]);
-
-		// chaque chan change the name
 	}
 
 	void mode(const Cmd &cmd) {
@@ -169,13 +166,14 @@ namespace CMD {
 		if ((int)cmd.arg.size() < 2)
 			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("MSG"));
 
-		std::string msg = cmd.client->getName();
-		msg += ":";
+		// std::string msg = cmd.client->getName();
+		// msg += ":";
+		std::string msg;
 		for(int i = 1; i < (int)cmd.arg.size(); i++) {
 			msg += " ";
 			msg += cmd.arg[i];
 		}
-		msg += "\n";
+		// msg += "\n";
 
 		// if its a chan
 		if ((char)cmd.arg[0][0] == '#') {
@@ -186,12 +184,11 @@ namespace CMD {
 			
 			if (!chan->hasClient(cmd.client))
 				std::invalid_argument(Error::ERR_NOTONCHANNEL(chan->getName())); 
-			std::string chanMsg = "[" + chan->getName() + "] " + msg;
-			chan->sendMSGClient(chanMsg, cmd.client);
+			chan->sendMSGClient(Error::RPL_MSGCHAN(cmd.client->getName(), chan->getName(), msg), cmd.client);
 		}
 		else {
 			Client * toSend = Server::findClient(cmd.arg[0]);
-			send(toSend->GetFd(), msg.c_str(), msg.length(), 0);
+			send(toSend->GetFd(), Error::RPL_MSG(cmd.client->getName(), msg).c_str(), Error::RPL_MSG(cmd.client->getName(), msg).length(), 0);
 		}
 
 
@@ -208,8 +205,10 @@ namespace CMD {
 			// not on channel
 		if (!chan->hasClient(cmd.client))
 			throw std::invalid_argument(Error::ERR_NOTONCHANNEL(cmd.arg[0]));
+		chan->sendMSGClient(Error::RPL_QUITCHAN(cmd.client->getName(), chan->getName()), cmd.client);
 		CMDH::removeClientChan(cmd.client, chan);
 	}
+
 	void quit(const Cmd &cmd) {
 		cmd.client->setQuit();
 	}

@@ -74,6 +74,7 @@
 		{
 			if (_Channels[chan] == true)
 			{
+				chan->sendMSGClient(Error::RPL_KICKCHAN(client->getName(), chan->getName()), client);
 				client->removeChan(chan);
 				chan->kick(client);
 			}

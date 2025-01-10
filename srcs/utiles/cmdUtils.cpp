@@ -61,6 +61,7 @@ namespace CMDH {
 					sup = true;
 					break;
 				}
+				(*it)->sendMSGClient(Error::RPL_QUITCHAN(client->getName(), (*it)->getName()), client);
 			}
 		} while (sup);
 	}

@@ -176,6 +176,9 @@ void Server::acceptNewClient()
 	NewPoll.events = POLLIN;
 	NewPoll.revents = 0;
 
+	// color lol
+	send(incofd, "\033[35;3m", strlen("\033[35;3m"), 0);
+
 	cli.SetFd(incofd);
 	cli.setIpAdd(inet_ntoa((cliadd.sin_addr)));
 
