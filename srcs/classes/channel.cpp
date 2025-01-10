@@ -114,9 +114,10 @@
 		if (!asking->getChop(this))
 			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 
-		if (clients.find(name) == clients.end())
+		Client * client = Server::findClient(name);
+		if (!client->isPartChan(this))
 			throw std::invalid_argument(Error::ERR_NOSUCHNICK(name));
-		clients[name]->setChop(SetChop, this);
+		client->setChop(SetChop, this);
 	}
 
 	void Channel::addClient(Client * client) {
@@ -125,35 +126,36 @@
 		if (_nbPeople == 0)
 			client->setChop(true, this);
 		_nbPeople++;
-		clients[client->getName()] = client;
+		clients.push_back(client->getName());
 	}
 
 	void Channel::kick(Client * client) {
-		std::map < std::string, Client * >::iterator it = clients.find(client->getName());
-		clients.erase(it);
+		std::vector <std::string >::iterator it = std::find(clients.begin(), clients.end(), client->getName());
+		if (it != clients.end()) {
+		    clients.erase(it);  // Erase the element at the found position
+		}
 		_nbPeople--;
 	}
 
 	void Channel::listClients(void) {
 		std::cout << clients.size() << " this is the size" << std::endl;
-		for (std::map <std::string, Client * >::iterator it = clients.begin(); it != clients.end(); ++it) {
-			std::cout << it->first << std::endl;
+		for (std::vector <std::string>::iterator it = clients.begin(); it != clients.end(); ++it) {
+			Client * client = Server::findClient(*it);
+			std::cout << client->getName() << client->GetFd() << std::endl;
 		}
 	}
 
 	void Channel::sendMSGClient(const std::string &msg, Client * sender) {
-		for (std::map<std::string, Client *>::iterator it = clients.begin(); it != clients.end(); ++it) {
-			std::cout << "FDDFDFSLDJFSKLDJFKLSJDFL" << it->second->GetFd() << std::endl;
-			if (it->second->GetFd() == sender->GetFd())
+		for (std::vector<std::string>::iterator it = clients.begin(); it != clients.end(); ++it) {
+			Client * client = Server::findClient(*it);
+			if (client->GetFd() == sender->GetFd())
 				continue;
-			send(it->second->GetFd(), msg.c_str(), msg.length(), 0);		
+			send(client->GetFd(), msg.c_str(), msg.length(), 0);		
 		}
 	}
 
 	bool Channel::hasClient(Client * client) {
-		if (clients.find(client->getName()) != clients.end())
-			return true;
-		return false;
+		return std::find(clients.begin(), clients.end(), client->getName()) != clients.end();
 	}
 
 	bool Channel::getNeedWp(void) const {
@@ -182,3 +184,12 @@
 			return true;
 		return _limitPeople <= _nbPeople ? false : true;
 	}
+
+	void Channel::changeNameClient(std::string newName, std::string oldName) {
+		std::vector <std::string >::iterator it = std::find(clients.begin(), clients.end(), oldName);
+		if (it != clients.end()) {
+		    clients.erase(it);
+		}
+		clients.push_back(newName);
+	}
+

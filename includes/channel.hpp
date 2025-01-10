@@ -33,7 +33,7 @@ class Channel {
 // **************************************************************//
 	void sendMSGClient(const std::string &msg, Client * sender);
 	void addClient(Client * client);
-
+	void changeNameClient(std::string newName, std::string oldName);
 // **************************************************************//
 // COMMAND
 // **************************************************************//
@@ -78,7 +78,7 @@ class Channel {
 
 	std::string verifyName(std::string & name);
 	// THE CLIENTS
-	std::map < std::string, Client * > clients;
+	std::vector <std::string> clients;
 };	
 
 

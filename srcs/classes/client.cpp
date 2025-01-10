@@ -42,6 +42,12 @@
 	void Client::setName(std::string name) {
 		if (CMDH::findClient(name))
 			throw std::invalid_argument(Error::ERR_NICKNAMEINUSE(name));
+		
+		for (std::map<Channel *, bool>::iterator it = _Channels.begin(); it != _Channels.end(); it++) {
+			it->first->changeNameClient(name, _name);
+		}
+
+
 		_name = name;
 	}
 
