@@ -96,7 +96,7 @@ void Server::serverInit()
 					receiveNewData(fds[i].fd);
 			}
 			// check si il doit quit
-			if (fds[i].fd > 0) {
+			if (fds[i].fd >= 0) {
 				Client * client = findClient("", fds[i].fd);
 				if (!client)
 					continue;

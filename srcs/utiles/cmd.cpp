@@ -39,6 +39,7 @@ namespace CMD {
 					continue;
 				cmd.client->join(chan);
 				std::cout << "JOINED CHANNEL" << std::endl;
+				chan->sendMSGClient(Error::RPL_JOINCHAN(cmd.client->getName(), chan->getName()), cmd.client);
 			}
 		}
 	}

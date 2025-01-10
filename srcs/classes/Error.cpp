@@ -40,6 +40,7 @@ std::string Error::RPL_ENDOFINVITELIST () {return "\033[31;1m347  <channel> : En
 std::string Error::RPL_UNIQOPIS () {return "\033[31;1m325 <channel> <nickname>\033[0m\n";}
 std::string Error::ERR_NONICK () {return "\033[31;1m431 : No nickname given\033[0m\n";}
 std::string Error::ERR_WRONGCMD (std::string name, std::string wrongCmd) {return "\033[31;1m421 \033[34m" + name + " " + wrongCmd + "\033[35;3m : Unknown command\033[0m\n";}
+std::string Error::RPL_JOINCHAN (std::string name, std::string chan) {return "\033[34m" + chan + "\033[35;3m : " + name + " Join the channel!\033[0m\n";}
 
 
 // JOIN 

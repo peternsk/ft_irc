@@ -54,6 +54,8 @@ class Error
         static std::string ERR_KEYSET();
         static std::string ERR_NONICK ();
         static std::string ERR_WRONGCMD(std::string name, std::string wrongCmd);
+        static std::string RPL_JOINCHAN (std::string name, std::string chan);
+
 
 
 };
