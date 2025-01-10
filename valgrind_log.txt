@@ -1,0 +1,6 @@
+==150948== Memcheck, a memory error detector
+==150948== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==150948== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==150948== Command: ./irc 8080 123
+==150948== Parent PID: 76152
+==150948== 

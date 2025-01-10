@@ -237,6 +237,9 @@ std::vector<std::string> Server::setCmdList(std::string clientRequest){
 
 int Server::foundCmd(std::list <std::string>&cmdArr, const std::string& cmd) {
 	int pos = 0;
+
+	if (cmd == "EMPTY")
+		return -1;
 	for (std::list<std::string>::iterator it = cmdArr.begin(); it != cmdArr.end(); ++it) {
 		if(*it == cmd){
     		std::cout << GRE << *it << WHI << std::endl;
@@ -244,7 +247,6 @@ int Server::foundCmd(std::list <std::string>&cmdArr, const std::string& cmd) {
 		}
 		pos++;
     }
-	// return (std::cout << RED << "COMMAND NOT FOUND" << WHI << std::endl, -1);
 	return -1;
 }
 
@@ -266,9 +268,10 @@ void Server::cmdHandler(int m_fd, std::string clientRequest){
 
 	void (*cmdFuncArr[])(const Cmd &cmd) = {CMD::join, CMD::kick,
 			CMD::topic, CMD::mode, CMD::nick, CMD::msg, CMD::part, CMD::quit, CMD::invite};
-
+	if (tokens.size() < 2)
+		return ;
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
-	
+
 	Cmd cmd = vectorToStruct(tokens, m_fd);
 	if(cmdPos >= 0){
 		try {
