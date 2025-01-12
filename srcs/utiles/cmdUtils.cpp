@@ -97,6 +97,13 @@ namespace CMDH {
 		}
 		return NULL;
 	}
+
+	void freeChannels(void) {
+		chanVec channels = CMDH::channelsArr(NULL);
+		for (chanVec::iterator it = channels.begin(); it != channels.end(); it++) {
+			delete *it;
+		}
+	}
 }
 
 // TO DO :
