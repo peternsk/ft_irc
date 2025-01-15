@@ -47,6 +47,8 @@ class Server {
 	    void closeFds();
 	    void clearClients(int fd);
 		void ircLogo();
+		void disconnect(Client * client);
+
 
 		/****************/
 		/* mid parssing */
@@ -57,7 +59,6 @@ class Server {
 		int foundCmd(std::list <std::string>&cmdArr, const std::string& cmd);
 		void printVector(std::vector<std::string> tokens);
 		Cmd vectorToStruct(std::vector<std::string> tokens, int fd);
-		bool isMode(std::string token);
 
 
 		/****************/
@@ -66,14 +67,15 @@ class Server {
 
 		Client& getClientClass(int fd);
 		void addClientToList(int fd);
-
+		static void checkName(std::string name);
+		static Client *findClient(std::string name, int fd = -1);
 
     private:
         int serPort;
         std::string serPassword;
 	    int serSocFd;
 	    static bool sig;
-	    std::vector<Client> clients;
+	    static std::vector<Client> clients;
         // std::map<std::string, int> clientsMap;
         // std::map<std::string, int> channelMap;
 	    std::vector<struct pollfd> fds;

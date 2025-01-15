@@ -21,7 +21,16 @@
 	std::string Channel::getName(void) const {
 		return _name;
 	}
-	bool Channel::getIsInviteOnly(void) const {
+	bool Channel::getIsInviteOnly(Client *client) {
+		if (client)
+		{
+			if (PendingInvite(client))
+			{
+				std::cout << "ispending invite" << std::endl;
+				return false;
+
+			}
+		}
 		return _isOnlyInvite;
 	}
 
@@ -47,16 +56,20 @@
 
 	// add a client that will change it if its an operator than can change the topic even if the flag is up
 	void Channel::topic(Client *asking, std::string newTopic) {
-		if (_isChopTopic && !asking->getChop(this))
-			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
-		if (!newTopic.empty())
+		if (!hasClient(asking))
+			throw std::invalid_argument(Error::ERR_NOTONCHANNEL(asking->getName()));
+		if (!newTopic.empty()) {
+			if (_isChopTopic && !asking->getChop(this))
+				throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 			_topic = newTopic;
+			return ;
+		}
 
 		// RETURN PROPER EXEPTION
 		if (_topic.empty())
 			throw std::runtime_error(Error::ERR_TOPICNOTSET(_name));;
 		// return the topics;
-		throw std::runtime_error(Error::RPL_TOPIC(_name, newTopic));
+		throw std::runtime_error(Error::RPL_TOPIC(_name, _topic));
 	}
 
 	// void Channel::join() {
@@ -69,79 +82,80 @@
 
 	void Channel::setInvitationMode(Client *asking, bool setOnlyInvite) {
 		if (!asking->getChop(this))
-			return ; //THROW ERROR
+			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 		_isOnlyInvite = setOnlyInvite;
 	}
 
 	void Channel::setLimitMode(Client *asking, int setLimit) {
 		if (!asking->getChop(this))
-			return ; //THROW ERROR
+			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 		_limitPeople = setLimit;
 	}
 
-	void Channel::setWpMode(Client *asking, std::string wp) {
+	void Channel::setWpMode(Client *asking, std::vector<std::string> arg) {
 		if (!asking->getChop(this))
-			return ; //THROW ERROR
-		if (wp.empty())
+			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
+		if ((int)arg.size() < 3)
 			_needPw = false;
 		else {
 			_needPw = true;
-			_wp = wp;
+			_wp = arg[2];
 		}
 	}
 
 	void Channel::setChopChangeTopic(Client *asking, bool setChopTopic) {
 		if (!asking->getChop(this))
-			return ; //THROW ERROR
+			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 		_isChopTopic = setChopTopic;
 	}
 
 	void Channel::setChop(Client *asking, const std::string &name, bool SetChop) {
+		listClients();
 		if (!asking->getChop(this))
-			return ; 	// OR THROW EXECPTIONS
+			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
 
-		if (clients.find(name) != clients.end())
-			clients[name]->setChop(SetChop, this);
+		Client * client = Server::findClient(name);
+		if (!client->isPartChan(this))
+			throw std::invalid_argument(Error::ERR_NOSUCHNICK(name));
+		client->setChop(SetChop, this);
 	}
 
 	void Channel::addClient(Client * client) {
 		if (!client)
-			return ; //THROW EXEPTION
+			return ;
 		if (_nbPeople == 0)
 			client->setChop(true, this);
 		_nbPeople++;
-		clients[client->getName()] = client;
+		clients.push_back(client->getName());
 	}
 
 	void Channel::kick(Client * client) {
-		std::map < std::string, Client * >::iterator it = clients.find(client->getName());
-		clients.erase(it);
+		std::vector <std::string >::iterator it = std::find(clients.begin(), clients.end(), client->getName());
+		if (it != clients.end()) {
+		    clients.erase(it);  // Erase the element at the found position
+		}
 		_nbPeople--;
 	}
 
 	void Channel::listClients(void) {
-		for (std::map <std::string, Client * >::iterator it = clients.begin(); it != clients.end(); ++it) {
-			std::cout << it->first << std::endl;
+		std::cout << clients.size() << " this is the size" << std::endl;
+		for (std::vector <std::string>::iterator it = clients.begin(); it != clients.end(); ++it) {
+			Client * client = Server::findClient(*it);
+			std::cout << client->getName() << client->GetFd() << std::endl;
 		}
 	}
 
 	void Channel::sendMSGClient(const std::string &msg, Client * sender) {
-		(void)msg;
-		(void)sender;
-
-		for (std::map<std::string, Client *>::iterator it; it != clients.end(); ++it) {
-			// if (it->getName() != Client->getName())
-			// // fd a changer
-			// if (send(it->fd, , 0) == 1)
-			// 	throw std::exception();
+		for (std::vector<std::string>::iterator it = clients.begin(); it != clients.end(); ++it) {
+			Client * client = Server::findClient(*it);
+			if (client->GetFd() == sender->GetFd())
+				continue;
+			send(client->GetFd(), msg.c_str(), msg.length(), 0);		
 		}
-
 	}
 
 	bool Channel::hasClient(Client * client) {
-		if (clients.find(client->getName()) != clients.end())
-			return true;
-		return false;
+		return std::find(clients.begin(), clients.end(), client->getName()) != clients.end();
 	}
 
 	bool Channel::getNeedWp(void) const {
@@ -153,3 +167,29 @@
 			return true;
 		return false;
 	}
+
+	bool Channel::PendingInvite(Client *newPending) {
+		for (std::vector <Client *>::iterator it = pendingInvite.begin(); it != pendingInvite.end(); it++)
+			if(*it == newPending) {
+				std::cout << "newpending" << std::endl;
+				pendingInvite.erase(it);
+				return (true);
+			}
+		pendingInvite.push_back(newPending);
+		return false;
+	}
+
+	bool Channel::checkLimitNbrPeople() {
+		if (_limitPeople == -1)
+			return true;
+		return _limitPeople <= _nbPeople ? false : true;
+	}
+
+	void Channel::changeNameClient(std::string newName, std::string oldName) {
+		std::vector <std::string >::iterator it = std::find(clients.begin(), clients.end(), oldName);
+		if (it != clients.end()) {
+		    clients.erase(it);
+		}
+		clients.push_back(newName);
+	}
+

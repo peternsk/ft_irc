@@ -4,6 +4,8 @@
 
 #include "ft_irc.hpp"
 
+std::vector<Client> Server::clients;
+
 
 /*********************************************************/
 /*            SERVER CONSTRUCTOR / DESTRUCTOR            */
@@ -39,6 +41,7 @@ void Server::ircLogo(){
 	std::cout << "     [ Internet Relay Chat ]" << std::endl;
 	std::cout << std::endl;
 }
+
 
 void Server::serSocket()
 {
@@ -81,7 +84,9 @@ void Server::serverInit()
 			throw(std::runtime_error("poll() faild"));
 
 		for (size_t i = 0; i < fds.size(); i++)
-		{
+		{	
+			// check if he has done the CMD QUIT
+
 			std::cout << "test 1...\n";
 			if (fds[i].revents & POLLIN)
 			{
@@ -90,9 +95,25 @@ void Server::serverInit()
 				else
 					receiveNewData(fds[i].fd);
 			}
+			// check si il doit quit
+			if (fds[i].fd >= 0) {
+				Client * client = findClient("", fds[i].fd);
+				if (!client)
+					continue;
+				if ((client->needQuit()))
+					disconnect(client);
+			}
 		}
 	}
 	closeFds();
+}
+
+void Server::disconnect(Client * client) {
+	std::cout << RED << "Client <" << client->GetFd() << "> Disconnected" << WHI << std::endl;
+	CMDH::clientDisconnect(client);
+	int fd = client->GetFd();
+	clearClients(fd);
+	close(fd);
 }
 
 bool Server::sig = false;
@@ -134,7 +155,7 @@ void Server::clearClients(int fd){
 /********************/
 /*  SERVER REQUEST  */
 /********************/
-
+int BUFCLIENTNAME = 0;
 void Server::acceptNewClient()
 {
 
@@ -155,8 +176,18 @@ void Server::acceptNewClient()
 	NewPoll.events = POLLIN;
 	NewPoll.revents = 0;
 
+	// color lol
+	send(incofd, "\033[35;3m", strlen("\033[35;3m"), 0);
+
 	cli.SetFd(incofd);
 	cli.setIpAdd(inet_ntoa((cliadd.sin_addr)));
+
+			// NOT SURE
+			std::stringstream ss;
+			ss << (BUFCLIENTNAME);
+			cli.setName(ss.str());
+			BUFCLIENTNAME++;
+
 	clients.push_back(cli);
 	fds.push_back(NewPoll);
 
@@ -169,15 +200,13 @@ void Server::receiveNewData(int m_fd)
 	memset(buff, 0, sizeof(buff));
 
 	ssize_t bytes = recv(m_fd, buff, sizeof(buff) - 1 , 0);
+	Client * client = findClient("", m_fd);
 
-	if(bytes <= 0){
-		std::cout << RED << "Client <" << m_fd << "> Disconnected" << WHI << std::endl;
-		clearClients(m_fd);
-		close(m_fd);
-	}
+	if(bytes <= 0)
+		disconnect(client);
 	else{
 		buff[bytes] = '\0';
-		Server::cmdHandler(m_fd, buff);
+		Server::cmdHandler(m_fd, buff);	
 	}
 }
 
@@ -187,7 +216,7 @@ std::vector<std::string> Server::setCmdList(std::string clientRequest){
     std::string token;
 
     size_t pos = 0;
-
+	
     while (((pos = clientRequest.find(" ")) != std::string::npos)
 		|| ((pos = clientRequest.find(",")) != std::string::npos)
 		|| ((pos = clientRequest.find('\n')) != std::string::npos)
@@ -198,16 +227,19 @@ std::vector<std::string> Server::setCmdList(std::string clientRequest){
         	tokens.push_back("EMPTY");
         	// tokens.push_back(token);
 		}
-        tokens.push_back(token);
+		if (token != "")
+        	tokens.push_back(token);
         clientRequest.erase(0, pos + 1);
     }
-    tokens.push_back(clientRequest);
-
+    // tokens.push_back(clientRequest); tout est enlever normalement fac c vide cause des probleme sinon
 	return tokens;
 }
 
 int Server::foundCmd(std::list <std::string>&cmdArr, const std::string& cmd) {
 	int pos = 0;
+
+	if (cmd == "EMPTY")
+		return -1;
 	for (std::list<std::string>::iterator it = cmdArr.begin(); it != cmdArr.end(); ++it) {
 		if(*it == cmd){
     		std::cout << GRE << *it << WHI << std::endl;
@@ -215,32 +247,47 @@ int Server::foundCmd(std::list <std::string>&cmdArr, const std::string& cmd) {
 		}
 		pos++;
     }
-	return (std::cout << RED << "COMMAND NOT FOUND" << WHI << std::endl, -1);
+	return -1;
 }
 
 void Server::cmdHandler(int m_fd, std::string clientRequest){
-	std::string cmdArr[] = {"join", "user", "kick", "invite", "topic", "mode", "nick", "msg"};
-
-	std::list<std::string> cmdList(cmdArr, cmdArr + 8);
+	std::string cmdArr[] = {"JOIN", "KICK", "TOPIC", "MODE", "NICK",  "MSG", "PART", "QUIT", "INVITE"};
+	std::list<std::string> cmdList(cmdArr, cmdArr + sizeof(&cmdArr) + 1);
 
 	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
 
+/// DEBUG**************
+	std::cout << std::endl;
+	int i = 0;
+	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++) {
+		std::cout << "TOKENS" << i << ":"<< *it << std::endl;
+		i++;
+	}
+	std::cout << "END"<< std::endl;
+//************* */
 
 	void (*cmdFuncArr[])(const Cmd &cmd) = {CMD::join, CMD::kick,
-			CMD::topic, CMD::mode, CMD::nick, CMD::msg}; // y va falloir add cmsg message pour channel
-
+			CMD::topic, CMD::mode, CMD::nick, CMD::msg, CMD::part, CMD::quit, CMD::invite};
+	if (tokens.size() < 2)
+		return ;
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
+
+	Cmd cmd = vectorToStruct(tokens, m_fd);
 	if(cmdPos >= 0){
-		Cmd cmd = vectorToStruct(tokens, m_fd);
 		try {
+			std::cout << "client name" << cmd.client->getName() << cmdPos<< std::endl;
     		(cmdFuncArr[cmdPos])(cmd);
 		}
 		catch  (const std::exception& e) {
-			// send e to client ***********
+			send(m_fd, e.what(), strlen(e.what()), 0);
 		}
 	}
+	else {
+		std::cout << tokens.at(1) << std::endl;
+		std::string wrongCmd = Error::ERR_WRONGCMD(cmd.client->getName(), tokens.at(1));
+		send(m_fd, wrongCmd.c_str(), strlen(wrongCmd.c_str()), 0);
+	}
 }
-
 
 void Server::printVector(std::vector<std::string> tokens){
 	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it){
@@ -248,7 +295,6 @@ void Server::printVector(std::vector<std::string> tokens){
     	std::cout << GRE << *it << WHI << std::endl;
 	}
 }
-
 
 /****************/
 /* Client class */
@@ -259,6 +305,37 @@ void Server::addClientToList(int fd){
 
 	*/
 	std::cout << MAG << "Client FD : " << LBLU << fd << std::endl;
+}
+
+void Server::checkName(std::string name) {
+	if ((int)name.size() > 20)
+			throw std::invalid_argument(Error::ERR_ERRONEUSNICKNAME(name));
+	std::vector<Client>::iterator it;
+	for (it = clients.begin(); it != clients.end(); ++it) {
+		if (name == it->getName())
+			throw std::invalid_argument(Error::ERR_NICKNAMEINUSE(name));
+	}
+	for (int i = 0; i < (int)name.size(); i++) {
+    	if (!std::isalnum(static_cast<unsigned char>(name[i])))
+			throw std::invalid_argument(Error::ERR_ERRONEUSNICKNAME(name));
+    	}
+}
+
+Client *Server::findClient(std::string name, int fd) {
+	
+	std::vector<Client>::iterator it;
+	for (it = clients.begin(); it != clients.end(); ++it) {
+		if (fd != -1) {
+			if (it->GetFd() == fd)
+				return &(*it);
+			continue;
+		}
+		if (name == it->getName())
+			return &(*it);
+	}
+	if (fd != -1)
+		return NULL;
+	throw std::invalid_argument(Error::ERR_NOSUCHNICK(name));
 }
 
 Client& Server::getClientClass(int fd){
@@ -273,42 +350,43 @@ Client& Server::getClientClass(int fd){
 	return *it;
 }
 
-bool Server::isMode(const std::string supMode){
-	std::string modeList[] = {"-O", "+O", "-T", "+T", "-K", "+K", "-L", "+L", "-I", "+I"};
-	std::vector<std::string> cmdMode(modeList, modeList + 10);
-	for (std::vector<std::string>::iterator it = cmdMode.begin(); it != cmdMode.end(); ++it){
-		if(std::strcmp(it->data(), supMode.c_str()) == true)
-			return (true);
-	}
-	return false;
-}
-
-
 Cmd Server::vectorToStruct(std::vector<std::string> tokens, int fd){
 	Cmd newStruct;
 
 	int vectPos = 0;
 	bool chanSwitch = false;
+	// jai modifier de if a des else if pour si ya dequoi de pas correct
 	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it){
-
 		if(it->at(0) == ':' && vectPos == 0)
 			newStruct.prefix = it->data();
-		if(it->length() > 0 && vectPos == 1)
+		else if(it->length() > 0 && vectPos == 1)
 			newStruct.cmd = it->data();
+		
+		// else if(Server::isMode(it->data()) && vectPos == 3)
+		// 	newStruct.mode = it->data();
 
-		if(Server::isMode(it->data()) && vectPos == 3)
-			newStruct.mode = it->data();
+		else if(it->at(0) == ':' && vectPos > 0)
+			newStruct.arg.push_back(it->data());
 
-		if(it->at(0) == ':' && vectPos > 0)
+		else if (newStruct.cmd == "JOIN" && it->at(0) == '#' && vectPos > 0) {
 			newStruct.arg.push_back(it->data());
-		if(it->at(0) == '#' && vectPos > 0){
-			newStruct.arg.push_back(it->data());
-			chanSwitch = true;
+			chanSwitch = true; // chanswitch ca sert a quoi?
 		}
-		if(it->at(0) && vectPos > 0 && chanSwitch == true)
-			newStruct.password.push_back(it->data());
+		else if(it->at(0) == '#' && vectPos > 0){
+			newStruct.arg.push_back(it->data());
+		}
+		else if(it->at(0) && vectPos > 0 && chanSwitch == true)
+			newStruct.password.push_back(it->data()); 
+		else if (*it != "EMPTY") {
+			newStruct.arg.push_back(it->data());
+		}
 		vectPos++;
 	}
 	newStruct.client = &Server::getClientClass(fd);
 	return newStruct;
 }
+
+
+// mode +k -k +i -i +t
+
+// probleme si tu fais une commande avec un espace sans rien

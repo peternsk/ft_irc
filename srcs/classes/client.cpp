@@ -1,7 +1,7 @@
 #include "client.hpp"
 
 
-	Client::Client() {}
+	Client::Client() : _needQuit(false) {}
 	Client::~Client() {
 	}
 
@@ -14,7 +14,7 @@
     return true;
 }
 
-	Client::Client(std::string name) {
+	Client::Client(std::string name) : _needQuit(false) {
 
 		// mettre ca ou tu creer le client
 		if (isAlphaNumeric(name))
@@ -23,6 +23,7 @@
 		if (!CMDH::findClient(name))
 			throw std::invalid_argument(Error::ERR_NICKNAMEINUSE(name));
 		_name = name;
+		_needQuit = false;
 	}
 
 	void Client::setChop(bool SetChop, Channel * chan) {
@@ -41,10 +42,18 @@
 	void Client::setName(std::string name) {
 		if (CMDH::findClient(name))
 			throw std::invalid_argument(Error::ERR_NICKNAMEINUSE(name));
+		
+		for (std::map<Channel *, bool>::iterator it = _Channels.begin(); it != _Channels.end(); it++) {
+			it->first->changeNameClient(name, _name);
+		}
+
+
 		_name = name;
 	}
 
 	Channel *Client::join(std::string name) {
+		if ((char)name[0] != '#')
+			throw std::invalid_argument(Error::Error::ERR_NOSUCHCHANNEL(name));
 		Channel *newChan = new Channel(name);
 		newChan->addClient(this);
 		_Channels[newChan] = true;
@@ -53,7 +62,7 @@
 
 	void Client::join(Channel *chan) {
 		if (_Channels.find(chan) != _Channels.end())
-			throw std::exception(); // change the exepiton "tried to join a Channel already in"
+			throw std::invalid_argument(Error::ERR_USERONCHANNEL(_name, chan->getName())); // change the exepiton "tried to join a Channel already in"
 		_Channels[chan] = false;
 		chan->addClient(this);
 	}
@@ -63,8 +72,9 @@
 			return ;
 		if (_Channels.find(chan) != _Channels.end())
 		{
-			if (_Channels[chan] == true && client->isPartChan(chan))
+			if (_Channels[chan] == true)
 			{
+				chan->sendMSGClient(Error::RPL_KICKCHAN(client->getName(), chan->getName()), client);
 				client->removeChan(chan);
 				chan->kick(client);
 			}
@@ -72,10 +82,7 @@
 				throw std::runtime_error(Error::ERR_CHANOPRIVSNEEDED(chan->getName()));
 			else
 				throw std::runtime_error(Error::ERR_USERNOTINCHANNEL(client->getName(), chan->getName()));
-			// else return dont have permition ou que le client nest pas dans le channel
 		}
-		throw std::runtime_error(Error::ERR_NOTONCHANNEL(chan->getName()));
-		// else retourne client is not in the channel
 	}
 
 	/********************/
@@ -113,4 +120,11 @@
 		{
 			std::cout << it->first->getName() << std::endl;
 		}
+	}
+	bool Client::needQuit() {
+		return _needQuit;
+	}
+
+	void Client::setQuit() {
+		_needQuit = true;
 	}

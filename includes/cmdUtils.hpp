@@ -24,6 +24,8 @@ namespace CMDH {
 	bool joinCheckMode(Channel * chan, const Cmd & cmd, int & nbWp);
 
 	Client *findClient(const std::string name);
+
+	void freeChannels(void);
 }
 
 #endif

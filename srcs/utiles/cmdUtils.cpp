@@ -61,10 +61,9 @@ namespace CMDH {
 					sup = true;
 					break;
 				}
+				(*it)->sendMSGClient(Error::RPL_QUITCHAN(client->getName(), (*it)->getName()), client);
 			}
 		} while (sup);
-
-		delete client;
 	}
 	void destroyChan(Channel * chan) {
 		chanVec &Channels = CMDH::channelsArr(NULL);
@@ -74,23 +73,19 @@ namespace CMDH {
 	}
 
 	bool joinCheckMode(Channel * chan, const Cmd & cmd, int & nbWp) {
-		if (chan->getIsInviteOnly())
-			throw std::invalid_argument(Error::ERR_INVITEONLYCHAN(chan->getName()));
 		if (chan->getNeedWp())
 		{
 			nbWp++;
-				p("needs pw");
 			if ((int)cmd.password.size() < nbWp)
-			{
-				// no password
 				throw std::invalid_argument(Error::ERR_BADCHANNELKEY(chan->getName()));
-			}
 			if (!chan->tryWp(cmd.password[nbWp - 1]))
-			{
-				// wrong pw
 				throw std::invalid_argument(Error::ERR_BADCHANNELKEY(chan->getName()));
-			}
 		}
+		if (chan->getIsInviteOnly(cmd.client))
+			throw std::invalid_argument(Error::ERR_INVITEONLYCHAN(chan->getName()));
+		if (!chan->checkLimitNbrPeople())
+			throw std::invalid_argument(Error::ERR_CHANNELISFULL(chan->getName()));
+		
 		return true;
 	}
 
@@ -101,6 +96,13 @@ namespace CMDH {
 				return (*it);
 		}
 		return NULL;
+	}
+
+	void freeChannels(void) {
+		chanVec channels = CMDH::channelsArr(NULL);
+		for (chanVec::iterator it = channels.begin(); it != channels.end(); it++) {
+			delete *it;
+		}
 	}
 }
 

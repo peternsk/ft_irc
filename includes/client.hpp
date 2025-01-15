@@ -21,11 +21,13 @@ public :
 	std::string getName(void);
 
 	Channel *join(std::string name);
+	
 	void join(Channel *chan);
 
 	void removeChan(Channel *chan);
 
 	void kick(Client * client, Channel * chan);
+
 
 	/*===== AJOUT PETER=====*/
 	int GetFd();
@@ -33,11 +35,15 @@ public :
 	void SetFd(int fd);
 	void setIpAdd(std::string ipadd);
 
+	bool needQuit();
+	void setQuit();
+
 private :
 	std::map <Channel *, bool > _Channels;
 	std::string _name;
 	int _fd;
 	std::string _IPadd;
+	bool _needQuit;
 };
 
 // 1.2.1 Operators

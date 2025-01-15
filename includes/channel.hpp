@@ -20,7 +20,7 @@ class Channel {
 	//getters
 	std::string getName(void) const;
 	short getNbPeople(void) const;
-	bool getIsInviteOnly(void) const;
+	bool getIsInviteOnly(Client *client);
 	bool getNeedWp(void) const;
 
 	bool tryWp(const std::string & trywp);
@@ -33,7 +33,7 @@ class Channel {
 // **************************************************************//
 	void sendMSGClient(const std::string &msg, Client * sender);
 	void addClient(Client * client);
-
+	void changeNameClient(std::string newName, std::string oldName);
 // **************************************************************//
 // COMMAND
 // **************************************************************//
@@ -49,24 +49,23 @@ class Channel {
 // **************************************************************//
 	// — i : Définir/supprimer le canal sur invitation uniquement
 	void setInvitationMode(Client *asking, bool setOninvite = false);
+	bool PendingInvite(Client *newPending);
 	// — t : Définir/supprimer les restrictions de la commande TOPIC pour les opé-
 	// rateurs de canaux
 	void setChopChangeTopic(Client *asking, bool setChopTopic = false);
 	// — k : Définir/supprimer la clé du canal (mot de passe)
-	void setWpMode(Client *asking, std::string wp = "");
+	void setWpMode(Client *asking, std::vector<std::string> arg);
 	// — o : Donner/retirer le privilège de l’opérateur de canal
 	void setChop(Client *asking, const std::string &name, bool SetChop = false);
 	// — l : Définir/supprimer la limite d’utilisateurs pour le canal
 	void setLimitMode(Client *asking, int setLimit = -1);
-
-
-
+	bool checkLimitNbrPeople();
 
 	private:
 	std::string _name;
 	std::string _topic;
 	int _nbPeople;
-
+	std::vector < Client *> pendingInvite;
 // for modes
 	// changing the topic only chop
 	bool _isChopTopic;
@@ -79,7 +78,7 @@ class Channel {
 
 	std::string verifyName(std::string & name);
 	// THE CLIENTS
-	std::map < std::string, Client * > clients;
+	std::vector <std::string> clients;
 };	
 
 

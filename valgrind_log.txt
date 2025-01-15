@@ -1,0 +1,167 @@
+==150948== Memcheck, a memory error detector
+==150948== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==150948== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==150948== Command: ./irc 8080 123
+==150948== Parent PID: 76152
+==150948== 
+==150948== 
+==150948== Process terminating with default action of signal 1 (SIGHUP)
+==150948==    at 0x4BD9B97: poll (poll.c:29)
+==150948==    by 0x11309D: Server::serverInit() (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11BE61: main (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== HEAP SUMMARY:
+==150948==     in use at exit: 74,087 bytes in 14 blocks
+==150948==   total heap usage: 82 allocs, 68 frees, 77,447 bytes allocated
+==150948== 
+==150948== 8 bytes in 1 blocks are still reachable in loss record 1 of 14
+==150948==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x11E6F3: __gnu_cxx::new_allocator<Channel*>::allocate(unsigned long, void const*) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11E2B5: __gnu_cxx::__alloc_traits<std::allocator<Channel*>, Channel*>::allocate(std::allocator<Channel*>&, unsigned long) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11DE05: std::_Vector_base<Channel*, std::allocator<Channel*> >::_M_allocate(unsigned long) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11D4AA: std::vector<Channel*, std::allocator<Channel*> >::_M_realloc_insert(__gnu_cxx::__normal_iterator<Channel**, std::vector<Channel*, std::allocator<Channel*> > >, Channel* const&) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11CF95: std::vector<Channel*, std::allocator<Channel*> >::push_back(Channel* const&) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11C26D: CMDH::channelsArr(Channel*) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11F1A4: CMD::join(Cmd const&) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x114793: Server::cmdHandler(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x113CB3: Server::receiveNewData(int) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x1131E2: Server::serverInit() (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11BE61: main (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 16 bytes in 1 blocks are still reachable in loss record 2 of 14
+==150948==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x11850F: __gnu_cxx::new_allocator<pollfd>::allocate(unsigned long, void const*) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x117FE1: __gnu_cxx::__alloc_traits<std::allocator<pollfd>, pollfd>::allocate(std::allocator<pollfd>&, unsigned long) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x1177DD: std::_Vector_base<pollfd, std::allocator<pollfd> >::_M_allocate(unsigned long) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x116A96: std::vector<pollfd, std::allocator<pollfd> >::_M_realloc_insert(__gnu_cxx::__normal_iterator<pollfd*, std::vector<pollfd, std::allocator<pollfd> > >, pollfd const&) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x115FCB: std::vector<pollfd, std::allocator<pollfd> >::push_back(pollfd const&) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x113A0E: Server::acceptNewClient() (in /home/dora/Documents/irc/irc)
+==150948==    by 0x1131B9: Server::serverInit() (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11BE61: main (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 23 bytes in 1 blocks are still reachable in loss record 3 of 14
+==150948==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x49C4289: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==150948==    by 0x10D55A: __static_initialization_and_destruction_0(int, int) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x10D5DA: _GLOBAL__sub_I__ZN7ChannelC2ENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE (in /home/dora/Documents/irc/irc)
+==150948==    by 0x4AEAEBA: call_init (libc-start.c:145)
+==150948==    by 0x4AEAEBA: __libc_start_main@@GLIBC_2.34 (libc-start.c:379)
+==150948==    by 0x10BB64: (below main) (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 23 bytes in 1 blocks are still reachable in loss record 4 of 14
+==150948==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x49C4289: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==150948==    by 0x110DA9: __static_initialization_and_destruction_0(int, int) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x110E29: _GLOBAL__sub_I__ZN6ClientC2Ev (in /home/dora/Documents/irc/irc)
+==150948==    by 0x4AEAEBA: call_init (libc-start.c:145)
+==150948==    by 0x4AEAEBA: __libc_start_main@@GLIBC_2.34 (libc-start.c:379)
+==150948==    by 0x10BB64: (below main) (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 23 bytes in 1 blocks are still reachable in loss record 5 of 14
+==150948==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x49C4289: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==150948==    by 0x1126C6: __static_initialization_and_destruction_0(int, int) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x112746: _GLOBAL__sub_I_operator.cpp (in /home/dora/Documents/irc/irc)
+==150948==    by 0x4AEAEBA: call_init (libc-start.c:145)
+==150948==    by 0x4AEAEBA: __libc_start_main@@GLIBC_2.34 (libc-start.c:379)
+==150948==    by 0x10BB64: (below main) (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 23 bytes in 1 blocks are still reachable in loss record 6 of 14
+==150948==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x49C4289: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==150948==    by 0x115BD2: __static_initialization_and_destruction_0(int, int) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x115C84: _GLOBAL__sub_I__ZN6Server7clientsE (in /home/dora/Documents/irc/irc)
+==150948==    by 0x4AEAEBA: call_init (libc-start.c:145)
+==150948==    by 0x4AEAEBA: __libc_start_main@@GLIBC_2.34 (libc-start.c:379)
+==150948==    by 0x10BB64: (below main) (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 23 bytes in 1 blocks are still reachable in loss record 7 of 14
+==150948==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x49C4289: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==150948==    by 0x11BAC6: __static_initialization_and_destruction_0(int, int) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11BB46: _GLOBAL__sub_I__ZN5ErrorC2Ev (in /home/dora/Documents/irc/irc)
+==150948==    by 0x4AEAEBA: call_init (libc-start.c:145)
+==150948==    by 0x4AEAEBA: __libc_start_main@@GLIBC_2.34 (libc-start.c:379)
+==150948==    by 0x10BB64: (below main) (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 23 bytes in 1 blocks are still reachable in loss record 8 of 14
+==150948==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x49C4289: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==150948==    by 0x11C071: __static_initialization_and_destruction_0(int, int) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11C0F1: _GLOBAL__sub_I_main (in /home/dora/Documents/irc/irc)
+==150948==    by 0x4AEAEBA: call_init (libc-start.c:145)
+==150948==    by 0x4AEAEBA: __libc_start_main@@GLIBC_2.34 (libc-start.c:379)
+==150948==    by 0x10BB64: (below main) (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 23 bytes in 1 blocks are still reachable in loss record 9 of 14
+==150948==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x49C4289: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==150948==    by 0x11CE0B: __static_initialization_and_destruction_0(int, int) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11CE8B: _GLOBAL__sub_I__ZN4CMDH10clientsArrEP6Client (in /home/dora/Documents/irc/irc)
+==150948==    by 0x4AEAEBA: call_init (libc-start.c:145)
+==150948==    by 0x4AEAEBA: __libc_start_main@@GLIBC_2.34 (libc-start.c:379)
+==150948==    by 0x10BB64: (below main) (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 23 bytes in 1 blocks are still reachable in loss record 10 of 14
+==150948==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x49C4289: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==150948==    by 0x121E3F: __static_initialization_and_destruction_0(int, int) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x121EBF: _GLOBAL__sub_I__ZN3CMD8printCMDER3Cmd (in /home/dora/Documents/irc/irc)
+==150948==    by 0x4AEAEBA: call_init (libc-start.c:145)
+==150948==    by 0x4AEAEBA: __libc_start_main@@GLIBC_2.34 (libc-start.c:379)
+==150948==    by 0x10BB64: (below main) (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 23 bytes in 1 blocks are still reachable in loss record 11 of 14
+==150948==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x49C4289: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==150948==    by 0x1225AE: __static_initialization_and_destruction_0(int, int) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x12262E: _GLOBAL__sub_I__ZN3CCM10clientsArrEP6Client (in /home/dora/Documents/irc/irc)
+==150948==    by 0x4AEAEBA: call_init (libc-start.c:145)
+==150948==    by 0x4AEAEBA: __libc_start_main@@GLIBC_2.34 (libc-start.c:379)
+==150948==    by 0x10BB64: (below main) (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 128 bytes in 1 blocks are still reachable in loss record 12 of 14
+==150948==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x1187D7: __gnu_cxx::new_allocator<Client>::allocate(unsigned long, void const*) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x1181CD: __gnu_cxx::__alloc_traits<std::allocator<Client>, Client>::allocate(std::allocator<Client>&, unsigned long) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x117BE5: std::_Vector_base<Client, std::allocator<Client> >::_M_allocate(unsigned long) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x116F7E: std::vector<Client, std::allocator<Client> >::_M_realloc_insert(__gnu_cxx::__normal_iterator<Client*, std::vector<Client, std::allocator<Client> > >, Client const&) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11629E: std::vector<Client, std::allocator<Client> >::push_back(Client const&) (in /home/dora/Documents/irc/irc)
+==150948==    by 0x1139F1: Server::acceptNewClient() (in /home/dora/Documents/irc/irc)
+==150948==    by 0x1131B9: Server::serverInit() (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11BE61: main (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 1,024 bytes in 1 blocks are still reachable in loss record 13 of 14
+==150948==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x4B3FBA3: _IO_file_doallocate (filedoalloc.c:101)
+==150948==    by 0x4B4ECDF: _IO_doallocbuf (genops.c:347)
+==150948==    by 0x4B4DF5F: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:744)
+==150948==    by 0x4B4C6D4: _IO_new_file_xsputn (fileops.c:1243)
+==150948==    by 0x4B4C6D4: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1196)
+==150948==    by 0x4B40FD6: fwrite (iofwrite.c:39)
+==150948==    by 0x49B1B64: std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==150948==    by 0x49B1EBA: std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==150948==    by 0x11289C: Server::ircLogo() (in /home/dora/Documents/irc/irc)
+==150948==    by 0x11BE2D: main (in /home/dora/Documents/irc/irc)
+==150948== 
+==150948== 72,704 bytes in 1 blocks are still reachable in loss record 14 of 14
+==150948==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==150948==    by 0x491F939: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==150948==    by 0x400647D: call_init.part.0 (dl-init.c:70)
+==150948==    by 0x4006567: call_init (dl-init.c:33)
+==150948==    by 0x4006567: _dl_init (dl-init.c:117)
+==150948==    by 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+==150948==    by 0x2: ???
+==150948==    by 0x1FFEFFFE26: ???
+==150948==    by 0x1FFEFFFE2C: ???
+==150948==    by 0x1FFEFFFE31: ???
+==150948== 
+==150948== LEAK SUMMARY:
+==150948==    definitely lost: 0 bytes in 0 blocks
+==150948==    indirectly lost: 0 bytes in 0 blocks
+==150948==      possibly lost: 0 bytes in 0 blocks
+==150948==    still reachable: 74,087 bytes in 14 blocks
+==150948==         suppressed: 0 bytes in 0 blocks
+==150948== 
+==150948== For lists of detected and suppressed errors, rerun with: -s
+==150948== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
