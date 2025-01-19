@@ -128,3 +128,10 @@
 	void Client::setQuit() {
 		_needQuit = true;
 	}
+
+	void Client::setUsername(std::string username)  {
+		_username = username;
+	}
+	std::string Client::getUsername() const {
+		return _username;
+	}

@@ -20,6 +20,7 @@ namespace CMD {
 		std::cout << "chan: " << cmd.chan << std::endl;
 	}
 
+
 	void join(const Cmd &cmd) {
 		int nbWp = 0;
 		if (cmd.arg.size() < 1)
@@ -90,11 +91,17 @@ namespace CMD {
 		cmd.client->kick(toKick, chan);
 	}
 
+	void user(const Cmd &cmd) {
+		if ((int)cmd.arg.size() < 1)
+			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("USER"));
+		Server::checkUsername(cmd.arg[0]);
+		cmd.client->setUsername(cmd.arg[0]);
+
+	}
+
 	void nick(const Cmd &cmd) {
 		if ((int)cmd.arg.size() < 1)
-			throw std::invalid_argument(Error::ERR_ERRONEUSNICKNAME(cmd.arg[0]));
-
-		CMDH::channelsArr(NULL);
+			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("NICK"));
 		Server::checkName(cmd.arg[0]);
 		cmd.client->setName(cmd.arg[0]);
 	}

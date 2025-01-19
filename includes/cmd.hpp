@@ -15,6 +15,7 @@ namespace CMD {
 	void part(const Cmd &cmd);
 	void quit(const Cmd &cmd);
 	void cmsg(const Cmd &cmd);
+	void user(const Cmd &cmd);
 }
 
 void execCmd(const Cmd &cmd);

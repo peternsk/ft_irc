@@ -49,7 +49,6 @@ class Server {
 		void ircLogo();
 		void disconnect(Client * client);
 
-
 		/****************/
 		/* mid parssing */
 		/****************/
@@ -68,6 +67,7 @@ class Server {
 		Client& getClientClass(int fd);
 		void addClientToList(int fd);
 		static void checkName(std::string name);
+		static void checkUsername(std::string name);
 		static Client *findClient(std::string name, int fd = -1);
 
     private:

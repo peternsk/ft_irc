@@ -38,9 +38,12 @@ public :
 	bool needQuit();
 	void setQuit();
 
+	void setUsername(std::string username);
+	std::string getUsername() const;
 private :
 	std::map <Channel *, bool > _Channels;
 	std::string _name;
+	std::string _username;
 	int _fd;
 	std::string _IPadd;
 	bool _needQuit;

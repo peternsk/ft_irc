@@ -87,7 +87,6 @@ void Server::serverInit()
 		{	
 			// check if he has done the CMD QUIT
 
-			std::cout << "test 1...\n";
 			if (fds[i].revents & POLLIN)
 			{
 				if (fds[i].fd == serSocFd)
@@ -159,7 +158,6 @@ int BUFCLIENTNAME = 0;
 void Server::acceptNewClient()
 {
 
-	std::cout << "test 2...\n";
 	Client cli;
 	struct sockaddr_in cliadd;
 	struct pollfd NewPoll;
@@ -251,31 +249,30 @@ int Server::foundCmd(std::list <std::string>&cmdArr, const std::string& cmd) {
 }
 
 void Server::cmdHandler(int m_fd, std::string clientRequest){
-	std::string cmdArr[] = {"JOIN", "KICK", "TOPIC", "MODE", "NICK",  "MSG", "PART", "QUIT", "INVITE"};
-	std::list<std::string> cmdList(cmdArr, cmdArr + sizeof(&cmdArr) + 1);
-
+	std::string cmdArr[] = {"JOIN", "KICK", "TOPIC", "MODE", "NICK",  "MSG", "PART", "QUIT", "INVITE", "USER"};
+	std::list<std::string> cmdList(cmdArr, cmdArr + 10);
 	std::vector<std::string> tokens = Server::setCmdList(clientRequest);
 
 /// DEBUG**************
-	std::cout << std::endl;
-	int i = 0;
-	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++) {
-		std::cout << "TOKENS" << i << ":"<< *it << std::endl;
-		i++;
-	}
-	std::cout << "END"<< std::endl;
+	// std::cout << std::endl;
+	// int i = 0;
+	// for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++) {
+	// 	std::cout << "TOKENS" << i << ":"<< *it << std::endl;
+	// 	i++;
+	// }
+	// std::cout << "END"<< std::endl;
 //************* */
 
 	void (*cmdFuncArr[])(const Cmd &cmd) = {CMD::join, CMD::kick,
-			CMD::topic, CMD::mode, CMD::nick, CMD::msg, CMD::part, CMD::quit, CMD::invite};
+			CMD::topic, CMD::mode, CMD::nick, CMD::msg, CMD::part, CMD::quit, CMD::invite, CMD::user};
 	if (tokens.size() < 2)
 		return ;
 	int cmdPos = foundCmd(cmdList, tokens.at(1));
 
 	Cmd cmd = vectorToStruct(tokens, m_fd);
+
 	if(cmdPos >= 0){
 		try {
-			std::cout << "client name" << cmd.client->getName() << cmdPos<< std::endl;
     		(cmdFuncArr[cmdPos])(cmd);
 		}
 		catch  (const std::exception& e) {
@@ -308,7 +305,7 @@ void Server::addClientToList(int fd){
 }
 
 void Server::checkName(std::string name) {
-	if ((int)name.size() > 20)
+	if ((int)name.size() > 15)
 			throw std::invalid_argument(Error::ERR_ERRONEUSNICKNAME(name));
 	std::vector<Client>::iterator it;
 	for (it = clients.begin(); it != clients.end(); ++it) {
@@ -320,6 +317,17 @@ void Server::checkName(std::string name) {
 			throw std::invalid_argument(Error::ERR_ERRONEUSNICKNAME(name));
     	}
 }
+
+void Server::checkUsername(std::string name) {
+	if ((int)name.size() > 40)
+		throw std::invalid_argument(Error::ERR_ERRONEUSUSERNAME(name));
+	std::vector<Client>::iterator it;
+	for (it = clients.begin(); it != clients.end(); ++it) {
+		if (name == it->getUsername())
+			throw std::invalid_argument(Error::ERR_USERNAMEINUSE(name));
+	}
+}
+
 
 Client *Server::findClient(std::string name, int fd) {
 	

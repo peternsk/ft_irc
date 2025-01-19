@@ -2,6 +2,12 @@
 Error::Error(/* args */){}
 
 Error::~Error(){}
+
+std::string Error::ERR_USERNAMEINUSE   (std::string name) { return "\033[0m\033[31;1m433 \033[0m\033[34m" + name + "\033[0m\033[35;3m :Username is already in use\033[0m\033[35;3m\n";}
+
+std::string Error::ERR_ERRONEUSUSERNAME(std::string name){
+    return  "\033[0m\033[31;1m432 "  + name +  "\033[0m\033[35;3m: Erroneous Username\033[0m\033[35;3m\n" ;
+}
 std::string Error::ERR_ERRONEUSNICKNAME(std::string name){
     return  "\033[0m\033[31;1m432 "  + name +  "\033[0m\033[35;3m: Erroneous nickname\033[0m\033[35;3m\n" ;
 }

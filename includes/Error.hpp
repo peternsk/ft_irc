@@ -12,14 +12,17 @@ class Error
 
     public:
         Error();
-        ~Error();
+        ~Error();   
         // Error( /* class server */ server *obj );
         // std::string ERR_NONICKNAMEGIVEN  () "";
 
         static std::string ERR_TOPICNOTSET   (std::string chan);
 
         // le nickname quand tu essaye de le changer ou register nest pas correct
+        static std::string ERR_USERNAMEINUSE   (std::string name);
+
         static std::string ERR_ERRONEUSNICKNAME  (std::string name); 
+        static std::string ERR_ERRONEUSUSERNAME  (std::string name); 
         static std::string ERR_NICKNAMEINUSE   (std::string name) ; 
         // static std::string ERR_NICKCOLLISION   (std::string name); no need
         // static std::string ERR_UNAVAILRESOURCE   ();  // not too sure
