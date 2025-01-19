@@ -57,7 +57,6 @@ namespace CMD {
 			throw std::invalid_argument(Error::ERR_NOSUCHCHANNEL(cmd.arg[0]));
 		// (void)chan;
 		//everything after the cmd topic if just one big string
-		std::cout << (int)cmd.arg.size() << std::endl;
 		if ((int)cmd.arg.size()  > 1) {
 			std::string newTopic;
 			for (int i = 1; i < (int)cmd.arg.size(); i++) {
@@ -125,12 +124,14 @@ namespace CMD {
 		else if(cmd.arg[1] == "+k")
 			chan->setWpMode(cmd.client, cmd.arg);
 		else if(cmd.arg[1] == "+o")
-			chan->setChop(cmd.client, cmd.arg[1], true);
+			chan->setChop(cmd.client, cmd.arg, true);
 		else if(cmd.arg[1] == "-o")
-			chan->setChop(cmd.client, cmd.arg[1]);
+			chan->setChop(cmd.client, cmd.arg);
 		else if(cmd.arg[1] == "+l") {
 			// linux i only have access to stoi in c++11
 			// cmd.chan->setLimitMode(cmd.client, std::stoi(cmd.arg[0]));
+			if ((int)cmd.arg.size() < 3)
+				throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("MODE : +l"));
 			int long nbr;
 			std::stringstream(cmd.arg[2]) >> nbr;
 			chan->setLimitMode(cmd.client, nbr);

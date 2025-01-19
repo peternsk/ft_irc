@@ -26,7 +26,6 @@
 		{
 			if (PendingInvite(client))
 			{
-				std::cout << "ispending invite" << std::endl;
 				return false;
 
 			}
@@ -109,14 +108,15 @@
 		_isChopTopic = setChopTopic;
 	}
 
-	void Channel::setChop(Client *asking, const std::string &name, bool SetChop) {
-		listClients();
+	void Channel::setChop(Client *asking, std::vector<std::string> arg, bool SetChop) {
+		
 		if (!asking->getChop(this))
 			throw std::invalid_argument(Error::ERR_CHANOPRIVSNEEDED(asking->getName()));
-
-		Client * client = Server::findClient(name);
+		if ((int)arg.size() < 3)
+			throw std::invalid_argument(Error::ERR_NEEDMOREPARAMS("MODE : +o or -o"));
+		Client * client = Server::findClient(arg[2]);
 		if (!client->isPartChan(this))
-			throw std::invalid_argument(Error::ERR_NOSUCHNICK(name));
+			throw std::invalid_argument(Error::ERR_NOSUCHNICK(arg[2]));
 		client->setChop(SetChop, this);
 	}
 
@@ -135,14 +135,6 @@
 		    clients.erase(it);  // Erase the element at the found position
 		}
 		_nbPeople--;
-	}
-
-	void Channel::listClients(void) {
-		std::cout << clients.size() << " this is the size" << std::endl;
-		for (std::vector <std::string>::iterator it = clients.begin(); it != clients.end(); ++it) {
-			Client * client = Server::findClient(*it);
-			std::cout << client->getName() << client->GetFd() << std::endl;
-		}
 	}
 
 	void Channel::sendMSGClient(const std::string &msg, Client * sender) {
@@ -171,7 +163,6 @@
 	bool Channel::PendingInvite(Client *newPending) {
 		for (std::vector <Client *>::iterator it = pendingInvite.begin(); it != pendingInvite.end(); it++)
 			if(*it == newPending) {
-				std::cout << "newpending" << std::endl;
 				pendingInvite.erase(it);
 				return (true);
 			}

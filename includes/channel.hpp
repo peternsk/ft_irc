@@ -56,7 +56,7 @@ class Channel {
 	// — k : Définir/supprimer la clé du canal (mot de passe)
 	void setWpMode(Client *asking, std::vector<std::string> arg);
 	// — o : Donner/retirer le privilège de l’opérateur de canal
-	void setChop(Client *asking, const std::string &name, bool SetChop = false);
+	void setChop(Client *asking, std::vector<std::string> arg, bool SetChop = false);
 	// — l : Définir/supprimer la limite d’utilisateurs pour le canal
 	void setLimitMode(Client *asking, int setLimit = -1);
 	bool checkLimitNbrPeople();
